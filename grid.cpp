@@ -1,15 +1,13 @@
 #include "grid.h"
 #include "simulation_state.h"
-
-
+#inlude <iostream>
+using namespace std;
 bool isInBounds(int x, int y)           //checks if entered x n y are in the range of arr
 {
     if (x>=0 && x<=rows && y>=0 && y<=cols)
       return true;
     else
-      return false;
-}
-
+      return false;}
 bool isTrackTile(char tile)       //checks tiles ki vals the train can move on
  {
     if (tile== '-'||tile== '|'||tile == '/' ||tile == '\\'||tile == '+'||tile== '='||tile =='S'||tile== 'D'||(tile >= 'A' && tile <= 'Z'))
