@@ -1,62 +1,85 @@
 #include "grid.h"
 #include "simulation_state.h"
 
-// ============================================================================
-// GRID.CPP - Grid utilities
-// ============================================================================
 
-// ----------------------------------------------------------------------------
-// Check if a position is inside the grid.
-// ----------------------------------------------------------------------------
-// Returns true if x,y are within bounds.
-// ----------------------------------------------------------------------------
-bool isInBounds() {
+bool isInBounds(int x, int y)           //checks if entered x n y are in the range of arr
+{
+    if (x>=0 && x<=rows && y>=0 && y<=cols)
+      return true;
+    else
+      return false;
 }
 
-// ----------------------------------------------------------------------------
-// Check if a tile is a track tile.
-// ----------------------------------------------------------------------------
-// Returns true if the tile can be traversed by trains.
-// ----------------------------------------------------------------------------
-bool isTrackTile() {
+bool isTrackTile(char tile)       //checks tiles ki vals the train can move on
+ {
+    if (tile== '-'||tile== '|'||tile == '/' ||tile == '\\'||tile == '+'||tile== '='||tile =='S'||tile== 'D'||(tile >= 'A' && tile <= 'Z'))
+      return true;
+    else 
+      return false;
 }
 
-// ----------------------------------------------------------------------------
-// Check if a tile is a switch.
-// ----------------------------------------------------------------------------
-// Returns true if the tile is 'A'..'Z'.
-// ----------------------------------------------------------------------------
-bool isSwitchTile() {
+bool isSwitchTile(char tile) 
+ {
+    if (tile>='A' && tile<='Z')
+      return true;
+    else
+      return false;
+ }
+
+int getSwitchIndex( char tile) 
+ {
+   int index;
+   index= tile-'A';
+   if (tile<='A' && tile>='Z')
+      return -1;
+   else
+      return (index); 
+ }
+
+bool isSpawnPoint( int x, int y) //checks spawn points ki vals by comparing their x and y vals w int ki x and y vals
+ {     
+      int i=0;
+      while (i < spawnCount) 
+      {
+        if (spawnPoints[i].x == x && spawnPoints[i].y == y) 
+            return true;
+        i++;
+      }
+      return false;
+}
+ 
+
+bool isDestinationPoint(int x, int y)  //checks dest points ki vals by comparing their x and y vals w int ki x and y vals
+{
+  int i=0;
+      while (i < Destination_count) 
+      {
+        if (Destination_Points[i].x == x && Destination_Points[i].y == y) 
+            return true;
+        i++;
+      }
+      return false;
 }
 
-// ----------------------------------------------------------------------------
-// Get switch index from character.
-// ----------------------------------------------------------------------------
-// Maps 'A'..'Z' to 0..25, else -1.
-// ----------------------------------------------------------------------------
-int getSwitchIndex() {
-}
+bool toggleSafetyTile( int x, int y)
+ {
+    char tile;
+    char t;
+    if (isInBounds(x,y)==false)
+     return false;
+    
+     tile=grid[x][y];
 
-// ----------------------------------------------------------------------------
-// Check if a position is a spawn point.
-// ----------------------------------------------------------------------------
-// Returns true if x,y is a spawn.
-// ----------------------------------------------------------------------------
-bool isSpawnPoint() {
-}
-
-// ----------------------------------------------------------------------------
-// Check if a position is a destination.
-// ----------------------------------------------------------------------------
-// Returns true if x,y is a destination.
-// ----------------------------------------------------------------------------
-bool isDestinationPoint() {
-}
-
-// ----------------------------------------------------------------------------
-// Toggle a safety tile.
-// ----------------------------------------------------------------------------
-// Returns true if toggled successfully.
-// ----------------------------------------------------------------------------
-bool toggleSafetyTile() {
-}
+     if (tile=='.')
+      {
+        grid[x][y]='=';
+        return true;
+      }
+     else if (tile=='=')
+     {
+        grid[x][y]='.';
+        return true;
+     }
+     else
+        return false; 
+ }
