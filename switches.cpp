@@ -11,15 +11,14 @@
 // UPDATE SWITCH COUNTERS
 // ----------------------------------------------------------------------------
 // Increment counters for trains entering switches.
-// ----------------------------------------------------------------------------
-void updateSwitchCounters() {
+void updateSwitchCounters(int index, int direction) 
+{
+    if ((index>=0&&index<=26)&&(direction>=0&&direction<=3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
+     {
+        switch_count[index][direction]=(switch_count[index][direction])+1;
+     }
 }
 
-// ----------------------------------------------------------------------------
-// QUEUE SWITCH FLIPS
-// ----------------------------------------------------------------------------
-// Queue flips when counters hit K.
-// ----------------------------------------------------------------------------
 void queueSwitchFlips() {
 }
 
