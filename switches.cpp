@@ -12,12 +12,32 @@
 // ----------------------------------------------------------------------------
 // Increment counters for trains entering switches.
 void updateSwitchCounters(int index, int direction) 
+void updateSwitchCounters(int index, int direction) 
 {
-    if ((index>=0&&index<=26)&&(direction>=0&&direction<=3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
+    if ((index>=0&&index<NumSwitches)&&(direction>=0&&direction<=3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
      {
-        switch_count[index][direction]=(switch_count[index][direction])+1;
+        if (direction==0)
+        {
+            Switch[index].counterUp++;
+        }
+        else if(direction==2)
+        {
+           Switch[index].counterDown++;                     //jo bhi direction we get uske accord we can inc the counters we intilaised simulation mein in switch struct
+        }
+        else if(direction==3)
+        {
+           Switch[index].counterLeft++;
+        }
+        else if(direction==1)
+        {
+           Switch[index].counterRight++;
+        }
+        else{
+            cout<<"invalid direction variable"<<endl;
+        }
      }
 }
+
 
 void queueSwitchFlips() {
 }
