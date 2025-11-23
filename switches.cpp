@@ -3,15 +3,8 @@
 #include "grid.h"
 #include "io.h"
 
-// ============================================================================
-// SWITCHES.CPP - Switch management
-// ============================================================================
 
-// ----------------------------------------------------------------------------
-// UPDATE SWITCH COUNTERS
-// ----------------------------------------------------------------------------
-// Increment counters for trains entering switches.
-void updateSwitchCounters(int index, int direction) 
+// This will sirf Increment counters for trains entering switches jo bhi direction hui.
 void updateSwitchCounters(int index, int direction) 
 {
     if ((index>=0&&index<NumSwitches)&&(direction>=0&&direction<=3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
@@ -71,5 +64,15 @@ void toggleSwitchState() {
 // ----------------------------------------------------------------------------
 // Return the state for a given direction.
 // ----------------------------------------------------------------------------
-int getSwitchStateForDirection() {
+
+int getSwitchStateForDirection(int index, int Entrydirection)
+{                                                          //also used in agli files train wali for entry dir
+    if (index>=0&& index<NumSwitches)                   //we check index<NumSwitches cuz what if num of switches are kam than 26
+    {
+        return Switch[index].currentState;           //fetches state atthe index
+    }    
+    else
+    {
+        return -1;
+    }
 }
