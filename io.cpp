@@ -120,7 +120,8 @@ bool loadLevelFile(const string& filename)
                   weather=trim(Line); }
             }
             else if (Line.find("MAP:")!=string::npos)
-            {
+            {   
+               map_ind=(Line.find("MAP:"))+2;
                 header_reading=false;
                 map_reading=true;
                 continue;                              //continue used cuz we wanna skip the line yahan keyword use hua ho
@@ -141,6 +142,8 @@ bool loadLevelFile(const string& filename)
                     if (c<Line.length())
                      {
                         grids[map_ind][c]=Line[c];} 
+                     else
+                      grids [map_ind][c]=' ';   
                 }
                 map_ind++;}
         }
