@@ -12,16 +12,18 @@ int cols = 0;                           //making it generic sa
 char grids[MAX_ROWS][MAX_COLS];
 // TRAINS
 const int NumTrains=100;
-struct trains{
-    int currentx, currenty; //current coordinates
-    int destinationX, destinationY; //jahan the train has to reach/ D wali D can be read iske andar
-    bool status; // wheather train reached or not
-    bool crash; // true for agar it crashed, false agar it never crashed
-    int spawnTicks;
-    int direction;
-    int trainid;
-    int SigColor;
-};
+int train_x[NumTrains];
+int train_y[NumTrains];
+int desty[NumTrains];
+int destx[NumTrains];
+bool status[NumTrains];
+bool crashed[NumTrains];
+int spawn_ticks[NumTrains];
+int direction[NumTrains];
+int train_ids[NumTrains];
+
+int totaltrains=0;
+
 
 trains Train[NumTrains];
 int traincount=0; //total num of trains jo from 0
