@@ -81,16 +81,16 @@ bool loadLevelFile(const string& filename)
             if (Line.find("ROWS:")!=string::npos)
             {   
                
-                if (getline(file, Line)) 
+                if (getline(file,Line)) 
                 { 
-                  rows=stoi(trim(Line));
+                  rows=stoi(Line);
                 }
             }
             else if (Line.find("COLS:")!=string::npos)
             {
                 if (getline(file,Line))
                  { 
-                  cols=stoi(trim(Line)); 
+                  cols=stoi(Line); 
                }
             }
             else if (Line.find("SEED:")!=string::npos)
@@ -98,12 +98,12 @@ bool loadLevelFile(const string& filename)
                 
                 if (getline(file, Line)) 
                 { 
-                  seed=stoi(trim(Line)); 
+                  seed=stoi(Line); 
                }
             }
-            else if (Line.find("WEATHER:") != string::npos)
+            else if (Line.find("WEATHER:")!= string::npos)
             {   
-                if (getline(file, Line)) 
+                if (getline(file,Line)) 
                 { 
                   weather=trim(Line);
                 if (weather=="RAIN") 
@@ -113,7 +113,7 @@ bool loadLevelFile(const string& filename)
                 else 
                     weatherMode=WEATHER_NORMAL; }
             }
-        else if (Line.find("MAP:") !=string::npos) 
+        else if (Line.find("MAP:")!=string::npos) 
         {
                int map_ind=Line.find("MAP:")+2;
                int len=strlen(Line);
@@ -140,7 +140,7 @@ bool loadLevelFile(const string& filename)
         }
         else if (map_reading)
         {
-            if (Line.find("SWITCHES:") != string::npos)       //when keyword switch comes baki sab vals become false
+            if (Line.find("SWITCHES:")!= string::npos)       //when keyword switch comes baki sab vals become false
             {
                 map_reading = false;
                 switches_reading = true;
@@ -196,9 +196,8 @@ bool loadLevelFile(const string& filename)
         {
             istringstream iss(Line);
             int tick;
-            int x, y, direction;
+            int x,y,direction;
             int Sigcolor;        // we assign int vals to colors
-
             // Tismein we j follow yeeh wala format jisme we take vals and then enter train ke struct mei(<tick><x><y><direction><Sigcolor>)
             if (iss>>tick>>x>>y>>direction>>Sigcolor)
             {
@@ -214,12 +213,11 @@ bool loadLevelFile(const string& filename)
               }
           }
       file.close();
-
        for (int r=0;r<rows;r++)
         {
          for (int c=0;c<cols;c++)
           {
-            char tile = grids[r][c];                  //checks dest points n spawn points
+            char tile=grids[r][c];                  //checks dest points n spawn points
                                                   //spawn points shud be bas spart ke which means no = sign at r-1
             if (tile==s_char&&spawnPointCount<=49)&&(grids[r-1][c]!= equal&&grids[r+1][c]!=equal)||(grids[r-1][c]!= equal)||(grids[r][c+1]!=underscore&& grids[r][c-1]!=underscore&& grids[r+1][c]!=equal &&grids[r-1][c]!=equal))
               {
@@ -240,7 +238,6 @@ bool loadLevelFile(const string& filename)
     file.close();
     return true;
 }
-
 
 void initializeLogFiles()                   //no param pass cuz sirf initialization happens here
  {                                         //ofstream is for writing wali thing
@@ -312,8 +309,8 @@ void writeMetrics()                 //we open matrics file yahan and agar it doe
       file <<"Total Ticks:"<<current_ticks<<endl;        //total ticks,trains crashed, trains delivered, crashed, total trains wai info
       file <<"Total Trains:"<<NumTrains<< endl;
       file <<"Trains Delivered:"<<trains_delivered<<endl;
-      file <<"Trains Crashed:"<<trains_crashed<< endl;
-    
+      file <<"Trains Crashed:"<<trains_crashed<<endl;   
+
       int collisions=trainsCrashed/2;                 //cuz 2 trains hv 1 coll so / by 2
       file<<"Total Collisions:"<<collisions<< endl;            //uske baad we move on to extra info to be stored in matrics file
                                                           //throughput currentticks
@@ -343,6 +340,6 @@ void writeMetrics()                 //we open matrics file yahan and agar it doe
            }
         file<<"Average Wait:"<<avgWait<<endl;
         file<<"Total Flips:"<<totalSwitchFlips<<endl;
-        file<<"Safety tiles Used:"<<safetytilesused<<endl;
+        file<<"Safety tiles Used:"<<safetyTilesUsed<<endl;
         file.close();}
 }
