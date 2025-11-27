@@ -4,12 +4,13 @@
 #include "../core/grid.h"
 #include "../core/switches.h"
 #include "../core/io.h"
+#include "sprites.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cstdio>
 using namespace std;
 
-static sf::RenderWindow* g_window = nullptr;
+static sf::RenderWindow* g_window=nullptr;
 static sf::Font g_font;
 
 const unsigned int WINDOW_WIDTH=400;
@@ -28,12 +29,6 @@ static int g_lastMouseY = 0;
 static float g_cellSize = 40.0f;
 static float g_gridOffsetX = 45.0f;
 static float g_gridOffsetY = 45.0f;
-
-extern void writeMetrics();      
-extern void simulateOneTick();    
-extern bool isSimulationComplete(); 
-extern void toggleSwitchState();             // ye we access from dosri files in core cuz our game needs to proceed accordingly
-extern bool toggleSafetyTile();   
 
 
 bool initializeApp()
@@ -61,7 +56,6 @@ bool initializeApp()
 
     return true; 
 } 
-
 
 void runApp() 
 {
@@ -137,7 +131,8 @@ void runApp()
                             g_isDragging=true;
                             g_lastMouseX=event.mouseButton.x;
                             g_lastMouseY=event.mouseButton.y;
-                            break;             }
+                            break;
+                        }
                         default:
                         {cout<<"invalid command!!"<<endl;
                         break;}
@@ -161,7 +156,8 @@ void runApp()
                     g_camera.move(-dx*0.5f,-dy*0.5f);    
                     g_window->setView(g_camera);
                     g_lastMouseX =event.mouseMove.x;
-                    g_lastMouseY =event.mouseMove.y;       }                                     
+                    g_lastMouseY =event.mouseMove.y;
+                   }                                     
                   }
                else if (event.type==sf::Event::MouseWheelScrolled) //mouse scrolling command starts yahan se
                 {
@@ -173,8 +169,9 @@ void runApp()
                      else if(event.mouseWheelScroll.delta<0) 
                        zoomFactor=0.8f;                        //zooming wala factor fullfilled inc in size and dec in size wali chez happns yahn
                      g_camera.zoom(zoomFactor);
-                     g_window->setView(g_camera);   }
-                }
+                     g_window->setView(g_camera);
+                   }
+-                }
             if (g_isStepMode==true)             //this means it wud move and so we will call simulateonetick takay movement
             {
                 simulateOneTick(); 
@@ -187,7 +184,8 @@ void runApp()
                 while (lag>=SIMULATION_TICK_TIME)
                 {
                     simulateOneTick();                      //hv to call the func takay keeps on going n movement occurs
-                    lag=lag-SIMULATION_TICK_TIME;}
+                    lag=lag-SIMULATION_TICK_TIME;
+                }
             }
                }
               g_window->clear(sf::Color(0xFF8800FF));
@@ -197,24 +195,25 @@ void runApp()
             if (g_isPaused==true)    //this means pause hui we cuz space bar pressed tou we display ke paused n press pace bar to restart
             {
                 sf::Text statusText("GAME PAUSED PRESS *SPACE BAR* TO CONTINUE",g_font,20);
-                statusText.setFillColor(sf::Color::Red);
+                statusText.setFillColor(sf::Color::Purple);
                 g_window->draw(statusText);
-            }                               //this sets the text to be display jab game is paused text ka font to be 20
+                                }                               //this sets the text to be display jab game is paused text ka font to be 20
             if (isSimulationComplete()==true)
             {   
                 sf::Text completeText("SIMULATION COMPLETE, GAME COMPLETE!", g_font,30);
-                completeText.setFillColor(sf::Color::Green);              //helps user to know game is complete
+                completeText.setFillColor(sf::Color::Red);              //helps user to know game is complete
                 g_window->draw(completeText);                        //this sets the text to be display jab game is paused text ka font to be 30
-            }
-              g_window->display();}
-    } 
+                                     }
+              g_window->display();
+        }
+    }  
     if (g_window->isClosed())
-        writeMetrics();               //we exit game is point pw
-}
+        writeMetrics();}               //we exit game is point pw
+
 void cleanupApp()
  {
      if (g_window)                 //this js clears pooro screen n resets 
       {
         delete g_window;
-        g_window = nullptr;}
-}
+        g_window = nullptr;}}
+
