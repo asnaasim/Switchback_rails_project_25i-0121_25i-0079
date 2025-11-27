@@ -8,7 +8,6 @@ bool isInBounds(int x,int y)           //checks if entered x n y are in the rang
     else
       return false;
 }
-
 bool isTrackTile(char tile)       //checks tiles ki vals the train can move on
  {
     if (tile=='-'||tile=='|'||tile=='/'||tile=='\\'||tile=='+'||tile=='='||tile=='S'||tile=='D'||(tile>='A'&&tile<='Z'))
@@ -43,8 +42,8 @@ bool isSpawnPoint(int x,int y) //checks spawn points ki vals by comparing their 
             return true;
         index++;
       }
-      return false;
-}
+      return false; }
+      
 bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing their x and y vals w int ki x and y vals
 {
   int index=0;
@@ -56,8 +55,7 @@ bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing 
          }
          index++;
      }
-    return false; 
-}
+    return false; }
 
 bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for that we check ke if the passed params are range mein or not
  {
@@ -77,8 +75,7 @@ bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for 
     {
         grid[x][y]=originalGrid[x][y];
         safetyTilesUsed--;                                                               
-        return true;
-    }
+        return true;   }
 
     return false; 
   }}
