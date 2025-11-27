@@ -11,7 +11,7 @@ const char equal='=';             //these are used to check agar D destpoint hai
 const char underscore='|';  
   string Line;
     char type;
-    int indx;                                     //we initialise ye poora ooper ho globally for all funcs in this
+    int indx; 
     int i=0;
     int r=0;
     int temprow=0; 
@@ -29,30 +29,30 @@ int row,col;
 extern int cols; 
 extern int CURRENT_TICK;
 extern int destPointCount;
- extern char switchLetter[26];
-extern string switchCurrentState[26];
-extern int switchMode[26];
-extern int switchStateLabel0[26];
-extern int switchStateLabel1[26];
-extern int switchKValues[26][4];
-extern int trainSpawnTick[100];
-extern int trainX[100];
-extern int trainY[100];
-extern int trainDirection[100];
-extern int Trainid[100];
-extern int trainColorIndex[100];
-extern int SpawnPointsX[50]; 
-extern int SpawnPointsY[50]; 
-extern int spawnPointDirection[50];
-extern int DestPointsX[50];
-extern int DestPointsY[50];
+ extern char switch_letter[26];
+extern string switchcurrentState[26];
+extern int switchmode[26];
+extern int switchstatelabel0[26];
+extern int switchstatelabel1[26];
+extern int switch_kvalues[26][4];
+extern int train_spawnticks[100];
+extern int train_x[100];
+extern int train_y[100];
+extern int train_direction[100];
+extern int train_ids[100];
+extern int train_colorindex[100];
+extern int spawnx[50]; 
+extern int spawny[50]; 
+extern int sdirection[50];
+extern int Destx[50];
+extern int Desty[50];
 extern int weatherMode;
 extern const int WEATHER_RAIN;
 extern const int WEATHER_FOG;
 extern const int WEATHER_NORMAL;
 extern int spawnPointCount;
-extern bool isInBounds(int x, int y); 
-extern bool istracktile(int x, int y);
+extern bool isInBounds(int x,int y); 
+extern bool istracktile(int x,int y);
 
 string trim(const string& str) 
 {                                                   //extra func that j trims extra spaces
@@ -69,7 +69,6 @@ bool loadLevelFile(const string& filename)
      {     cout << "Error opening level file:"<<filename<<endl;
         return false;
     }
-
     while (getline(file, Line))
     {
         if (Line.empty()) 
@@ -118,10 +117,10 @@ bool loadLevelFile(const string& filename)
         {
                int map_ind=Line.find("MAP:")+2;
                int len=strlen(Line);
-               else if (line == "MAP:")
+               else if (line=="MAP:")
             {
-                readingHeader = false;
-                readingMap = true;
+                readingHeader=false;
+                readingMap=true;
 
                 grid=new char*[rows];
                 originalGrid=new char*[rows];
@@ -182,15 +181,15 @@ bool loadLevelFile(const string& filename)
                 int index=letter-'A';
                 if (index>=0&&index<=25)
                 {                                              //after reading sab vals are eneterd in switch ka struct one by one in order
-                    switchLetter[index]=letter;
-                    switchCurrentState[index]=currentState ;
-                    switchMode[index]=mode;
-                    switchStateLabel0[index]=state0;
-                    switchStateLabel1[index]=state1;
-                    switchKValues[index][0]=k1;
-                    switchKValues[index][1]=k2;
-                    switchKValues[index][2]=k3;
-                    switchKValues[index][3]=k4;}}
+                    switch_letter[index]=letter;
+                    switch_currentState[index]=currentState ;
+                    switchmode[index]=mode;
+                    switchstatelabel0[index]=state0;
+                    switchstatelabel1[index]=state1;
+                    switch_kvalues[index][0]=k1;
+                    switch_kvalues[index][1]=k2;
+                    switch_kvalues[index][2]=k3;
+                    switch_kvalues[index][3]=k4;}}
         }
 
         else if (trains_reading)            //yahan se reading for train val starts
@@ -205,12 +204,12 @@ bool loadLevelFile(const string& filename)
             {
                 if (traincount<100)
                 { 
-                    trainSpawnTick[traincount]=tick;
-                    trainX[traincount]= x;
-                    trainY[traincount]= y;
-                    trainDirection[traincount]= direction;
-                    Trainid[traincount]= traincount;
-                    trainColorIndex[traincount]=Sigcolor;
+                    train_spawnticks[traincount]=tick;
+                    train_x[traincount]= x;
+                    train_y[traincount]= y;
+                    train_direction[traincount]= direction;
+                    Train_id[traincount]= traincount;
+                    train_colorindex[traincount]=Sigcolor;
                     traincount++;}}
               }
           }
@@ -224,15 +223,15 @@ bool loadLevelFile(const string& filename)
                                                   //spawn points shud be bas spart ke which means no = sign at r-1
             if (tile==s_char&&spawnPointCount<=49)&&(grids[r-1][c]!= equal&&grids[r+1][c]!=equal)||(grids[r-1][c]!= equal)||(grids[r][c+1]!=underscore&& grids[r][c-1]!=underscore&& grids[r+1][c]!=equal &&grids[r-1][c]!=equal))
               {
-                SpawnPointsX[spawnPointCount]=r;
-                SpawnPointsY[spawnPointCount]=c; 
-                spawnPointDirection[SpawnPointCount]=DIR_RIGHT;             
+                Spawnx[spawnPointCount]=r;
+                Spawny[spawnPointCount]=c; 
+                sdirection[SpawnPointCount]=0;             
                 spawnPointCount++;}
                 
             else if ((grids[r][c]==d_char&&destPointCount<=49)&&(grids[r+1][c]!= equal&&grids[r-1][c]!=equal)||(grids[r+1][c]!= equal)||(grids[r][c+1]!=underscore&& grids[r][c-1]!=underscore&& grids[r+1][c]!=equal &&grids[r-1][c]!=equal))
                     {
-                        DestPointsX[destPointCount]=r;              //dest points shud be bas spart ke which means n0 = sign at r+1 wala krke
-                        DestPointsY[destPointCount]=c;              //issi tarha we do diff checks and then get the value that is bilkul end pe
+                        Destx[destPointCount]=r;              //dest points shud be bas spart ke which means n0 = sign at r+1 wala krke
+                        Desty[destPointCount]=c;              //issi tarha we do diff checks and then get the value that is bilkul end pe
                                                                 // we take reference from 3 files hard, complex and mediym
                         destPointCount++;
                     }
@@ -286,13 +285,13 @@ void logSwitchState(int tick,char Switch,const string& mode,const string& state)
     {
       file<<tick<<","<<Switch<<","<<mode<<","<<state<<endl;
       file.close();}
-}                                                          //yahan bas cheezain get written in .csv file
-                                               
-void logSignalState(int tick, char Switch, const string& SigColor) 
+}
+
+void logSignalState(int tick,char Switch,const string& SigColor) 
 {
-    ofstream file("out/signals.csv", ios::app);
+    ofstream file("out/signals.csv",ios::app);
     if (!file.is_open())
-    {                                                                //.csv file is wo jismein elements are separated by commas and thats how they are alag from eachother cuz commma comes beech mein
+    {
      cout<<"Failed to open signals.csv"<<endl;}
     else
     {
@@ -305,44 +304,45 @@ void writeMetrics()                 //we open matrics file yahan and agar it doe
     ofstream file("out/metrics.txt");           //this is metrics ki output file yahan all matric rel things are stroed
     if (!file.is_open()) 
     {
-        cout<< "Failed to open metrics.txt"<<endl;               //ye sab gets printed out in the metrics in the output directory
+        cout<< "Failed to open metrics.txt"<<endl;
     }
     else if(file.is_open())
     {
-      file<<"Simulation Matrics Details and Stats"<< endl;         //pehla we write matrics sara trains ke
-      file<<"Total Ticks:"<<currentTick<<endl;        //total ticks,trains crashed, trains delivered, crashed, total trains wai info
-      file<<"Total Trains:"<<trainCount<< endl;
-      file<<"Trains Delivered:"<<trainsDelivered<<endl;
-      file<<"Trains Crashed:"<<trainsCrashed<< endl;
+      file <<"Train Simulation Metrics"<< endl;         //pehla we write matrics sara trains ke
+      file <<"Total Ticks:"<<current_ticks<<endl;        //total ticks,trains crashed, trains delivered, crashed, total trains wai info
+      file <<"Total Trains:"<<NumTrains<< endl;
+      file <<"Trains Delivered:"<<trains_delivered<<endl;
+      file <<"Trains Crashed:"<<trains_crashed<< endl;
+    
       int collisions=trainsCrashed/2;                 //cuz 2 trains hv 1 coll so / by 2
-      file<<"Total Collisions: "<<collisions<< endl;            //uske baad we move on to extra info to be stored in matrics file
+      file<<"Total Collisions:"<<collisions<< endl;            //uske baad we move on to extra info to be stored in matrics file
                                                           //throughput currentticks
       float throughput=0.0;
       if (currentTick>0)
       {
-        throughput=(trainsDelivered* 100.0)/currentTick;
+        throughput=(trainsDelivered*100.0)/currentTick;
       }
-      file << "Throughput:"<<throughput<<" per 100 ticks"<< endl;
+      file <<"Throughput:"<<throughput<<"per 100 ticks"<< endl;
         int totalWait=0;                       //we calc throughputs per 100 ticks cuz we've taken max trains as 100 vals we have taken
         int activeTrains=0;
-       for (int i = 0; i<trainCount; i++) 
+       for (int i=0;i<trainCount;i++) 
          {
-          if (trainState[i]!=TRAIN_INACTIVE)      //trains shud be active tab ye condition works matlab if active tou total wait mein the value of array at that index is added   
+          if (train_status[i]==1)      //trains shud be active tab ye condition works matlab if active tou total wait mein the value of array at that index is added   
             {
-              totalWait=totalWait+trainWaitTicks[i];
-              activeTrains++;
-          }
+              totalWait=totalWait+train_waitticks[i];
+              activeTrains++;     }
        }
        float averageWait;
        if(activeTrains>0)
       {
        averageWait=(float)totalWait/activeTrains;
-      }                                                 //since avg weight time is float mein tou type csting cuz we cant take active trains as float cuz makes no sense
+          } 
        else
          {
-            averageWait=0;}
+            averageWait=0;
+           }
         file<<"Average Wait:"<<avgWait<<endl;
-        file<<"Total Flips:"<<totalSwitchFlips<<endl;     //phir we output ye sab cheezain  the average weight time of all the trains total weight krke active trains se divide
-        file<<"Safety tiles Used:"<<safetyTilessUsed<<endl;                       //safety tiles jo we used
+        file<<"Total Flips:"<<totalSwitchFlips<<endl;
+        file<<"Safety tiles Used:"<<safetytilesused<<endl;
         file.close();}
 }
