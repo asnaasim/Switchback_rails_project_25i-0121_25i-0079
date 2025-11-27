@@ -1,5 +1,6 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+//simple header file as barely any constants used, just utilisation of an additional funtion
 
 // ============================================================================
 // SIMULATION.H - Simulation tick logic
@@ -22,6 +23,9 @@ void initializeSimulation();
 // ----------------------------------------------------------------------------
 // True if all trains are delivered or crashed.
 bool isSimulationComplete();
+
+//additional function for grid printing
+void printGrid();
 
 #endif
 
