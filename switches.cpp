@@ -74,15 +74,15 @@ void applyDeferredFlips()
     {
         if (switch_queuedtoflip[i]==true)                //phir hi we apply ye poori logic
         {
-          switchcurrentState[i]=(1-(switchcurrentState[i]));   
+          switch_currentState[i]=(1-(switch_currentState[i]));   
           int currentstate_output;                                 //ismein we flip the current state
-          if(switchcurrentState[i]==0)
+          if(switch_currentState[i]==0)
           {
             currentstate_output=switchstatelabel0[i];}    //ismein you sirf check ke current state kiya hogi agar 0 then assign state0 to it
            else                                           //agar 1 hogi tou j assign state 1 and baad mein all of this is passed to the SwitchState wali file
-            {  currentstate_output=switchstateLabel1[i];}             //logfile made in io.cpp
+            {  currentstate_output=switchstatelabel1[i];}             //logfile made in io.cpp
             logSwitchState(CURRENT_TICK,switch_letter[i],switchmode[i],currentstate_output);
-            switch_queuedtofliped[i]=false;} 
+            switch_queuedtoflip[i]=false;} 
         i++;}  }
           
 
@@ -113,7 +113,7 @@ void updateSignalLights()
         int next_row=switch_row;
         int next_col=switch_col;
        
-        int current_state=switchcurrentState[i];
+        int current_state=switch_currentState[i];
         int exit_direction;
                if (current_state==0)
         {
@@ -121,7 +121,7 @@ void updateSignalLights()
         }
         else if (current_state==1)
         {
-            exit_direction = switchstateLabel1[i];  }
+            exit_direction = switchstatelabel1[i];  }
        
         switch (exit_direction)
         {
@@ -164,7 +164,7 @@ void updateSignalLights()
            
             if (distance>0&&distance<=2)   //greater than 0 cuz 0 pe collision 2 pe yellow n us se kam pe we get red
             {
-                int train_dir=train_directions[t];
+                int train_dir=train_direction[t];
                 bool train_approaching=false;
                
                 if ((train_dir==0&&train_row > switch_row && train_col==switch_col)||(train_dir==1&&train_col <switch_col&&train_row==switch_row)|| (train_dir==2&&train_row < switch_row && train_col==switch_col)||(train_dir==3&&train_col >switch_col&&train_row==switch_row))    
@@ -178,14 +178,14 @@ void updateSignalLights()
                     signal_lights[i]=YELLOW;   }
             }
            
-            if (trains_row==next_row&&trains_col==next_col)   //checks agar we assign red cuz agar sab occupied ho
+            if (train_row==next_row&&train_col==next_col)   //checks agar we assign red cuz agar sab occupied ho
             {
                 signal_lights[i]=RED;  //we assign red to it cuz agar next tile occupied n wahan alr a trains there
             }
            
             int train_next_row=train_row;
             int train_next_col=train_col;
-            int train_dir=train_directions[t];
+            int train_dir=train_direction[t];
            
             switch(train_dir)                  // is point pe we calc where will our trains move agay and decide phir how do we go abt it
             {                                          //this will check the direction agar 0 1 2 3 after which we make choice ke we move ooper, down left or right
@@ -207,18 +207,18 @@ void updateSignalLights()
             }
            
                                                                              // we will check yahan agar train ki next pos like x n y coords match next x n y coords movement specturm pe
-            if (trains_next_row==next_row&&trains_next_col==next_col)
+            if (train_next_row==next_row&&train_next_col==next_col)
             {
                 signal_lights[i]=RED;   //when sig light get 2 matlab assign red cuz collision matlab train is viciniity mein hi
             } }
     }
     i++;
 }
-}}
+}
 
 void toggleSwitchState(int index)
 {                                                           //gottamake sure ke index pe null charactr na ho and out of bounds na ho
-          switchcurrentState[index]=1-switchcurrentState[index]; 
+          switch_currentState[index]=1-switch_currentState[index]; 
               int state;                                         //ismein we flip the current state
           if(index>=0&&index<NumSwitches&&switch_letter[index]!='\0')               //allows the user to do things manually like right key press krke
           {                                                     // its diff from deffered flips cuz wo happens to the tick once every round and ye wala only when right key ko dabaya
@@ -232,7 +232,7 @@ int getSwitchStateForDirection(int index,int Entrydirection)
 {                                                          //also used in agli files train wali for entry dir
     if (index>=0&&index<NumSwitches)                   //we check index<NumSwitches cuz what if num of switches are kam than 26
     {
-      return(switchcurrentState[index]);           //fetches state atthe index
+      return(switch_currentState[index]);           //fetches state atthe index
     }    
     else                                     //  
     {return -1; }                                      //we get -1 agar invalid ho index like outta range typa 
