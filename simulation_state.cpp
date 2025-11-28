@@ -10,7 +10,7 @@ int rows = 0;
 int cols = 0;                           //making it generic sa
 
 
-char grids[max_rows][max_cols];    
+char grid[max_rows][max_cols];    
 char originalGrid[max_rows][max_cols];
 
 //________TRAINS_________//
@@ -38,7 +38,6 @@ bool train_plannedmove[max_trains];
 
 //---tRAIN STATUS----//
 int train_status[max_trains];       //moving, waiting, crashed, arrived
-
 //----possible ticks---//
 int train_spawnticks[max_trains];  
 int train_waitticks[max_trains];   
@@ -105,7 +104,7 @@ int safetyTilesUsed=0;
     int signalViolations=0;
     int totalWaitTicks=0; 
 
-    
+    int signallights[50];
 
 
 // ============================================================================
@@ -121,9 +120,9 @@ void initializeSimulationState()
     //initializinng the grid
     rows=0;
     cols=0;      //setting our rows and columns to zero
-    for (int i=0; i<rows; i++){
-        for (int j=0; j<cols; j++){
-            grids[i][j] = '.';
+    for (int i=0; i<max_rows; i++){
+        for (int j=0; j<max_cols; j++){
+            grid[i][j] = '.';
             originalGrid[i][j] = '.';
         }}
     
@@ -147,7 +146,6 @@ void initializeSimulationState()
         train_direction[i]=0;
         train_status[i]= TRAIN_INACTIVE;
     }
-    int traincount = 0;
     
     //initializing all the switches
     NumSwitches=0;
@@ -204,6 +202,10 @@ void initializeSimulationState()
     levelName[0]='\0';
     safetyTilesUsed=0;
     weathermode= WEATHER_NORMAL;
+
+    for (int i=0; i<50; i++){
+        signallights[i]=0;
+    }
 
 
 }
