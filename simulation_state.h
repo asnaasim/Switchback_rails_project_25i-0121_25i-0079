@@ -9,14 +9,13 @@
 
 // ----------------------------------------------------------------------------
 // GRID CONSTANTS
-const int max_rows=100;
-const int max_cols=100;
+const int max_rows=70;
+const int max_cols=70;
 
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
 const int max_trains=100;
 const int max_colors=10;
-
 
 //direction constants
 const int DIR_UP=0;
@@ -32,9 +31,6 @@ const int TRAIN_CRASHED=3;
 const int TRAIN_DELAYED=4;
 const int TRAIN_ARRIVED=5;
 
-
-
-
 // ----------------------------------------------------------------------------
 // SWITCH CONSTANTS
 
@@ -43,9 +39,6 @@ const int max_switches=26; //26 as represents from a-z
 //switch modes
 const int SWITCH_MODE_PER_DIR=0;
 const int SWITCH_MODE_GLOBAL=1;
-
-
-
 
 // ----------------------------------------------------------------------------
 // WEATHER CONSTANTS
@@ -63,42 +56,45 @@ const int signal_red=2;
 const int MAX_SPAWN=20;
 const int MAX_DESTINATION=20;
 
-
-
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: GRID
 extern int rows;
 extern int cols;
 extern char grid[max_rows][max_cols];
 extern char originalGrid[max_rows][max_cols];
-
-
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: TRAINS
 // ----------------------------------------------------------------------------
-extern int train_spawnx[max_trains];
-extern int train_x[max_trains];  //x coordinate train ka
-extern int train_y[max_trains];      //y coordinate train ka
-extern int train_desty[max_trains];
-extern int train_destx[max_trains];
-extern int train_status[max_trains];       //crashed or not
-extern int train_currentticks[max_trains];
+
+//all possible coordinates
+extern int NumTrains;
+extern int train_x[max_trains];  
+extern int train_y[max_trains];    
+extern int train_nextx[max_trains]; 
+extern int train_nexty[max_trains];  
+extern int train_previousy[max_trains];
+extern int train_previousx[max_trains];
+extern int train_destinationx[max_trains];
+extern int train_destinationy[max_trains];
+
+extern int train_status[max_trains];     
+//possible ticks
 extern int train_spawnticks[max_trains];
 extern int train_waitticks[max_trains];
+//possible directions
 extern int train_direction[max_trains];
-extern int train_ids[max_trains];          //DIFFERETIATINg between trains
+extern int train_nextdirection[max_trains];
+extern bool train_plannedmove[max_trains];
+
 extern int train_colorindex[max_trains];
-extern int lag[max_trains];
-extern int train_previousx[max_trains];
+extern int train_delaytimer[max_trains];
 
-
-
-extern int NumTrains=0; 
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SWITCHES (A-Z mapped to 0-25)
- extern int NumSwitches=0;
+ extern int NumSwitches;
 
+    extern int mode[max_switches];
     extern char switch_letter[max_switches];  //A, B, C se Z tk
     extern int switch_currentState[max_switches]; //1 agar active root, 0 agar nae
     extern char switch_statelabel1[max_switches][20];
@@ -119,18 +115,14 @@ extern int NumTrains=0;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SPAWN POINTS
-   const int MAX_SPAWN=50;
-
-    extern int spawnx[MAX_SPAWN];     
-    extern int spawny[MAX_SPAWN];      
-    extern int sdirection[MAX_SPAWN];
-
-        
-    
 
     extern int spawnPointCount;
     extern int destPointCount;
     
+
+    extern int spawnx[MAX_SPAWN];     
+    extern int spawny[MAX_SPAWN];      
+    extern int sdirection[MAX_SPAWN];
 
 
 // ----------------------------------------------------------------------------
@@ -155,7 +147,9 @@ extern char levelName[100];
     extern int metric_crashed; 
     extern int metric_collisions;
     extern int metric_totaltrains;
-    extern int safetytiles;
+    extern int metric_totaltrains;
+    extern int safetyTilesUsed;
+    extern int signallights[50];
 
 
 // ----------------------------------------------------------------------------
