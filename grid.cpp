@@ -38,7 +38,7 @@ bool isSpawnPoint(int x,int y) //checks spawn points ki vals by comparing their 
       int index=0;
       while (index<spawnPointCount) 
       {
-        if (SpawnPointsX[index]==x&&SpawnPointsY[index]==y) 
+        if (Spawn_x[index]==x&&Spawnt_y[index]==y) 
             return true;
         index++;
       }
@@ -47,9 +47,9 @@ bool isSpawnPoint(int x,int y) //checks spawn points ki vals by comparing their 
 bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing their x and y vals w int ki x and y vals
 {
   int index=0;
-      while (index<destinationPointCount) 
+      while (index<destPointCount) 
       {
-        if ((DestPointsX[index]==x)&&(DestPointsY[index]==y)) 
+        if ((Dest_x[index]==x)&&(Dest_y[index]==y)) 
         { 
            return true;
          }
