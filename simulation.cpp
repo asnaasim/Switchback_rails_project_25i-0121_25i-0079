@@ -14,7 +14,7 @@ using namespace std;
 // ============================================================================
 //additional function for grid printing
 void printGrid(){
-    cout<<"Tick: "<<currentTick<<endl;
+    cout<<"Tick: "<<currentTick<<endl;          //provide the tick b4 starting
 
     //creation of a grid
     char display[max_rows][max_cols];
@@ -33,7 +33,7 @@ void printGrid(){
             }
         }
     }
-    
+    //print grid wala loop
     for (int i =0; i<rows; i++){
         for (int j=0; j<cols; j++){
             cout<<display[i][j];
@@ -44,8 +44,8 @@ void printGrid(){
 for (int i=0; i<NumTrains; i++){
     if (train_status[i]==TRAIN_MOVING || train_status[i]== TRAIN_DELAYED || train_status[i]== TRAIN_WAITING) {
         const char* dirNames[]= {"UP", "RIGHT", "DOWN", "LEFT"};
-        const char* stateNames[]= {"INACTIVE", "WAITING", "MOVING", "DELAYED", "ARRIVED", "CRASHED"};
-        cout<<" Train "<<i<<" at (" <<train_x[i]<<","<<train_y[i]<<") moving "<< dirNames[train_direction[i]]<<" state: "<<stateNames[train_status[i]]<<"\n";}}
+        const char* stateNames[]= {"INACTIVE", "WAITING", "MOVING","CRASHED", "DELAYED", "ARRIVED"};
+        cout<<" Train "<<i<<" at (" <<train_x[i]<<","<<train_y[i]<<") moving "<< dirNames[train_direction[i]]<<" state: "<<stateNames[train_status[i]]<<endl;}}
         cout<<"Delivered: "<<metric_delivered<< " \n Crashed: "<<metric_crashed<<"\n";    }
 
 // ----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ initializeSimulationState();
 cout<<"Simulation Initialized!"<<endl;
 cout<<"Your level: "<<levelName<<endl;
 cout<<"Your Trains: "<<NumTrains<<endl;
-cout<<"Grid: "<<grid<<endl;
+cout<<"Grid: "<<rows<< cols <<endl;
 cout<<"Switches: "<<NumSwitches<<endl;
 cout<<"seed: "<<seed<<endl;
 
@@ -75,14 +75,18 @@ void simulateOneTick() {
 cout<<"The tick is currently: "<<currentTick<<endl;
 cout<<"trains will now be spawned.."<<endl;
 spawnTrainsForTick();
-cout<<"route determination is underway.."<<endl;
+cout<<"route determination underway.."<<endl;
 determineAllRoutes();
-cout<<"switch counders are now being updated.."<<endl;
-updateSwitchCounters();
+cout<<"switch counters are now being updated.."<<endl;
+updateSwitchCounters(*train_x, *train_direction);
 cout<<"Switch flips beeing queued"<<endl;
 queueSwitchFlips();
 cout<<"Collisions being detected"<<endl;
 detectCollisions();
+cout<<"Moving trains"<<endl;
+moveAllTrains;
+printGrid();
+currentTick++;
  }
 
 
@@ -102,11 +106,10 @@ bool isSimulationComplete() {
     //check to see if trains are attempted to spawn
     bool allspawned=true;
         for (int i=0; i<NumTrains; i++){
-        if (train_status[i] == TRAIN_INACTIVE && train_status[i] <=currentTick){
+        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] <=currentTick){
             allspawned=false;
             break;
         }
     }
     return (active==0 && allspawned);
 }
-
