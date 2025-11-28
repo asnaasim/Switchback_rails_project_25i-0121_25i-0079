@@ -117,9 +117,6 @@ extern int train_delaytimer[max_trains];
 // GLOBAL STATE: SPAWN POINTS
 
     extern int spawnPointCount;
-    extern int destPointCount;
-    
-
     extern int spawnx[MAX_SPAWN];     
     extern int spawny[MAX_SPAWN];      
     extern int sdirection[MAX_SPAWN];
@@ -127,7 +124,6 @@ extern int train_delaytimer[max_trains];
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: DESTINATION POINTS
-const int MAX_DESTINATION=50;
 extern int destPointCount;
 extern int destx[MAX_DESTINATION];
 extern int desty[MAX_DESTINATION];
@@ -151,7 +147,6 @@ extern char levelName[100];
     extern int safetyTilesUsed;
     extern int signallights[50];
 
-
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: EMERGENCY HALT
 // ----------------------------------------------------------------------------
@@ -159,7 +154,6 @@ extern bool emergencyhalt_active;
 extern int emergencyhalt_x;     
 extern int emergencyhalt_y;    
 extern int emergencyhalt_timer;
-
 
 // ----------------------------------------------------------------------------
 // INITIALIZATION FUNCTION
