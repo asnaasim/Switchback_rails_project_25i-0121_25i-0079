@@ -24,36 +24,6 @@ const char underscore='|';
     int seed;  //acts as row ki index as when we iterate thru the file  we start 1 se cuz 0 pos pe it j has NAME 
     bool map_found=false;    //ye help to iterate through file once map is found 
  
-extern *grid;    // extern accesses them external source se 
-int row,col;
-extern int cols; 
-extern int CURRENT_TICK;
-extern int destPointCount;
- extern char switch_letter[26];
-extern string switchcurrentState[26];
-extern int switchmode[26];
-extern int switchstatelabel0[26];
-extern int switchstatelabel1[26];
-extern int switch_kvalues[26][4];
-extern int train_spawnticks[100];
-extern int train_x[100];
-extern int train_y[100];
-extern int train_direction[100];
-extern int train_ids[100];
-extern int train_colorindex[100];
-extern int spawnx[50]; 
-extern int spawny[50]; 
-extern int sdirection[50];
-extern int Destx[50];
-extern int Desty[50];
-extern int weatherMode;
-extern const int WEATHER_RAIN;
-extern const int WEATHER_FOG;
-extern const int WEATHER_NORMAL;
-extern int spawnPointCount;
-extern bool isInBounds(int x,int y); 
-extern bool istracktile(int x,int y);
-
 string trim(const string& str) 
 {                                                   //extra func that j trims extra spaces
     size_t first=str.find_first_not_of(" \t\r\n");
@@ -174,7 +144,8 @@ bool loadLevelFile(const string& filename)
             istringstream iss(Line);
             char letter;
             string currentState;
-            int mode,state0,state1;
+            int mode;
+            char state0,state1;
             int init,k1,k2,k3,k4;
             if (iss>>letter>>currentState>>mode>>k1>>k2>>k3>>k4>>state0>>state1)
             {
@@ -322,23 +293,23 @@ void writeMetrics()                 //we open matrics file yahan and agar it doe
       file <<"Throughput:"<<throughput<<"per 100 ticks"<< endl;
         int totalWait=0;                       //we calc throughputs per 100 ticks cuz we've taken max trains as 100 vals we have taken
         int activeTrains=0;
-       for (int i=0;i<trainCount;i++) 
+       for (int i=0;i<NumTrains;i++) 
          {
           if (train_status[i]==1)      //trains shud be active tab ye condition works matlab if active tou total wait mein the value of array at that index is added   
             {
               totalWait=totalWait+train_waitticks[i];
               activeTrains++;     }
        }
-       float averageWait;
+       float avrgWait;
        if(activeTrains>0)
       {
-       averageWait=(float)totalWait/activeTrains;
+       avrgWait=(float)totalWait/activeTrains;
           } 
        else
          {
-            averageWait=0;
+            avegWait=0.0;
            }
-        file<<"Average Wait:"<<avgWait<<endl;
+        file<<"Average Wait:"<<avrgWait<<endl;
         file<<"Total Flips:"<<totalSwitchFlips<<endl;
         file<<"Safety tiles Used:"<<safetyTilesUsed<<endl;
         file.close();}
