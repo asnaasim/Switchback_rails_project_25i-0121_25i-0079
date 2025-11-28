@@ -41,7 +41,7 @@ bool isSpawnPoint(int x,int y) //checks spawn points ki vals by comparing their 
     int index=0;
     while (index<spawnPointCount) 
     {
-        if (Spawn_x[index]==x && Spawn_y[index]==y) 
+        if (spawnx[index]==x && spawny[index]==y) 
             {return true;}
         index++;
     }
@@ -53,7 +53,7 @@ bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing 
     int index=0;
     while (index<destPointCount) 
     {
-        if (Dest_x[index]==x && Dest_y[index]==y) 
+        if (destx[index]==x && desty[index]==y) 
         { return true;}
         index++;
     }
@@ -70,13 +70,13 @@ bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for 
         if (tile=='-'||tile=='|')            //safety tile can only be toggled agar - or | ho. and if sucessfully toggled tou true warna false
        {
         grid[x][y]='=';
-        safetyTilesUsed++;                     //use of stfy tile is inc cuz toggle hore hai
+        safetytiles++;                     //use of stfy tile is inc cuz toggle hore hai
         return true;
        }
        else if (tile=='=')                                      
          {
         grid[x][y]=originalGrid[x][y];
-        safetyTilesUsed--;                                                               
+        safetytiles--;                                                               
         return true;   }}
     
     return false; 
