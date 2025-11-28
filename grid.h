@@ -3,7 +3,7 @@
 
 
 bool isInBounds(int x, int y);
-extern grid;
+extern char grid;
 bool isTrackTile(char tile);
 bool isSwitchTile(char tile);
 int getSwitchIndex(char tile);
