@@ -87,9 +87,134 @@ void applyDeferredFlips()
           
 
 void updateSignalLights()
-{
-  
+{    int indxx=0;
+    while(indxx<NumSwitches)
+    {
+        if (switch_letter[indxx]!='\0')
+        {
+            signal_lights[indxx]=GREEN;  
+            }
+        else 
+            signal_lights[indxx]='\0';
+        indxx++;
+    }
+   
+    int i =0;
+    while(i<NumSwitches)
+    {
+        if (switch_letter[i]=='\0')
+        {
+            continue;  // Skip empty switches ki jaga cuz shuru mein we have fixed size tou empty things will be encountered
+           }
+       
+        int switch_row=switch_positions[i][0];
+        int switch_col=switch_positions[i][1];
+       
+        int next_row=switch_row;
+        int next_col=switch_col;
+       
+        int current_state=switchcurrentState[i];
+        int exit_direction;
+               if (current_state==0)
+        {
+            exit_direction=switchstatelabel0[i];   //checks the value of current state fro, current state ka arr and then assigns exit val fro, switch takay it stays same path pe agar it encounters koye aur trains phir dir changes
+        }
+        else if (current_state==1)
+        {
+            exit_direction = switchstateLabel1[i];  }
+       
+        switch (exit_direction)
+        {
+          case 0:
+            {next_row=next_row-1;
+            break;}
+        
+          case 1:   
+            {next_col=next_col+1;
+            break;}
+        
+          case 2:
+        {
+            next_row=next_row+1;
+            break;        }
+          case 3: 
+        {
+            next_col=next_col-1;
+            break;   }
+          default:
+             cout<<"unexpected haulting!! reboot system"<<endl;  }
+       
+        if (next_row<0||next_row >=GRID_ROWS||next_col<0||next_col>=GRID_COLS)
+        {
+            signal_lights[i]=RED;  
+            continue;
+        }
+       
+        for (int t=0;t<NumTrains;t++)
+        {
+            if (train_active[t]==false)
+            {      continue;           }  //cont cuz yahan inactive wahan se terminate and move to jahan its active
+           else if (train_active[t]==true){
+            int train_row = train_positions[t][0];
+            int train_col = train_positions[t][1];
+           
+            int row_diff=train_row-switch_row;
+            int col_diff=train_col-switch_col;
+            int distance=abs(row_diff)+abs(col_diff);  // Manhattan distance cuz distance switch se hve to calc takay we can identigfy konsa colour to assign agay
+           
+            if (distance>0&&distance<=2)   //greater than 0 cuz 0 pe collision 2 pe yellow n us se kam pe we get red
+            {
+                int train_dir=train_directions[t];
+                bool train_approaching=false;
+               
+                if ((train_dir==0&&train_row > switch_row && train_col==switch_col)||(train_dir==1&&train_col <switch_col&&train_row==switch_row)|| (train_dir==2&&train_row < switch_row && train_col==switch_col)||(train_dir==3&&train_col >switch_col&&train_row==switch_row))    
+                  {
+                    train_approaching=true;        //checks agar trains coming tab we do yellow
+                     }
+
+
+                if (train_approaching&&signal_lights[i]==GREEN)
+                {
+                    signal_lights[i]=YELLOW;   }
+            }
+           
+            if (trains_row==next_row&&trains_col==next_col)   //checks agar we assign red cuz agar sab occupied ho
+            {
+                signal_lights[i]=RED;  //we assign red to it cuz agar next tile occupied n wahan alr a trains there
+            }
+           
+            int train_next_row=train_row;
+            int train_next_col=train_col;
+            int train_dir=train_directions[t];
+           
+            switch(train_dir)                  // is point pe we calc where will our trains move agay and decide phir how do we go abt it
+            {                                          //this will check the direction agar 0 1 2 3 after which we make choice ke we move ooper, down left or right
+              case 0: 
+                     {train_next_row=train_next_row-1;
+                     break;}
+            case 1:
+                     {train_next_col=train_next_col+1;
+                     break;}
+            case 2: 
+                     {train_next_row=train_next_row+1;
+                     break;}
+            case 3: 
+                     {train_next_col=train_next_col-1;
+                     break;}
+            default:
+                             {cout<<"unexpected error!! system hault"<<endl;
+                             break;}
+            }
+           
+                                                                             // we will check yahan agar train ki next pos like x n y coords match next x n y coords movement specturm pe
+            if (trains_next_row==next_row&&trains_next_col==next_col)
+            {
+                signal_lights[i]=RED;   //when sig light get 2 matlab assign red cuz collision matlab train is viciniity mein hi
+            } }
+    }
+    i++;
 }
+}}
 
 void toggleSwitchState(int index)
 {                                                           //gottamake sure ke index pe null charactr na ho and out of bounds na ho
