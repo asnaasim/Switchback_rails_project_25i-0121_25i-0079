@@ -2,8 +2,8 @@
 #define GRID_H
 
 
-bool isInBounds(int x, int y);
-extern char grid;
+bool isInBounds(int x,int y);
+extern char grid[max_rows][max_cols];
 bool isTrackTile(char tile);
 bool isSwitchTile(char tile);
 int getSwitchIndex(char tile);
