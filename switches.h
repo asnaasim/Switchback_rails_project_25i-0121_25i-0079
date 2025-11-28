@@ -5,10 +5,7 @@
 void updateSwitchCounters(int index,int direction);
 void queueSwitchFlips();
 void applyDeferredFlips();
-// ----------------------------------------------------------------------------
-// SIGNAL CALCULATION
-// ----------------------------------------------------------------------------
-// Update switch signal colors.
+
 void updateSignalLights();
 
 void toggleSwitchState(int index);
