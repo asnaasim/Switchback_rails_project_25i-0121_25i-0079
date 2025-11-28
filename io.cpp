@@ -3,11 +3,12 @@
 #include "grid.h"
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include <sstream>
 #include <string>
 using namespace std;
 
-const char equal='=';
+const char equalsign = '=';
 const char underscore = '|';
 const char s_char='S';          //these consts will be unifrom poori jaga se like same so we declare as global
 const char d_char='D';
@@ -26,8 +27,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  ifstream file(filename);
  if (!file.is_open())       //we do file hangling that is checking file availaboe hai ya nae
  {
-   cout<<"Error opening level file:"<< filename << endl;
-    return false;
+ cout<<"Error opening level file:"<< filename << endl;
+ return false;
  }
 
  string Line;
@@ -71,7 +72,7 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  {
  if (getline(file, Line))
  {
-   string weather=trim(Line);                   // these function for the weather checks agar rain normal ya fog
+   weather=trim(Line);                   // these function for the weather checks agar rain normal ya fog
      if (weather=="RAIN")
         weatherMode= WEATHER_RAIN;
       else if (weather=="FOG")
@@ -82,10 +83,11 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  }
  else if (Line.find("MAP:") != string::npos)
  {
-     header_reading=false;
-     map_reading=true;
+ header_reading=false;
+ map_reading=true;
 
-char originalGrid[70][70];
+ grid = char[rows];
+ originalGrid = char [rows];
  for (int r=0; r<rows;r++)
  {
  grid[r]=char[cols];
@@ -118,7 +120,6 @@ char originalGrid[70][70];
             tile = ' ';
          grid[map_ind][C]=tile;
          originalGrid[map_ind][C]=tile;
-         C++;
       }
     map_ind++;
    }
@@ -136,7 +137,7 @@ char originalGrid[70][70];
  char letter;
  string currentState;
  int mode;
- string state0, state1;
+ char state0, state1;
  int k1,k2,k3,k4;
 
  if (iss>>letter>>currentState>>mode>>k1>>k2>>k3>>k4>> state0 >> state1)
@@ -146,9 +147,9 @@ char originalGrid[70][70];
  {
      switch_letter[index]=letter;                 //ye pooray saray arrays for switch rel things these are what we store
      switch_currentState[index]=currentState;
-     switchmode[index] mode;
-      switchstatelabel0[index]=state0;
-     switchstatelabel1[index]=state1;
+     switchmode[index] =mode;
+     switch_statelabel0[index]=state0;
+     switch_statelabel1[index]=state1;
      switch_kvalues[index][0]=k1;
      switch_kvalues[index][1]=k2;
       switch_kvalues[index][2]=k3;
@@ -171,7 +172,7 @@ char originalGrid[70][70];
           train_direction[NumTrains]=direction;
           Train_ids[NumTrains]=NumTrains;
           train_colorindex[NumTrains]=Sigcolor;
-          NumTrains++;
+           NumTrains++;
              }
          }
      }
@@ -187,16 +188,16 @@ char originalGrid[70][70];
       {
          bool is_isolated=true;
 
-        if (r>0 &&grid[r-1][c]==equal) 
+        if (r>0 &&grid[r-1][c]==equalsign) 
             {is_isolated=false;}
-        else if (r<rows-1&&grid[r+1][c]==equal) 
+        else if (r<rows-1&&grid[r+1][c]==equalsign) 
              {is_isolated=false;}                    //gthis is spawn points ka check ke agar un se pehlay theres no = sign cuz we assume un ne pichla x is none
         else if (c>0 &&grid[r][c-1]==underscore) 
              {is_isolated=false;}
         else if (c<cols-1&&grid[r][c+1]==underscore) 
              {is_isolated=false;}
 
-     if (is_isolated)
+     if (is_isolated==true)
       {
         spawnx[spawnPointCount]=r;
         spawny[spawnPointCount]=c;
@@ -208,9 +209,9 @@ char originalGrid[70][70];
  {
  bool is_isolated = true;
 
- if (r>0 && grid[r-1][c]==equal)  //so to check if its isolated n a dest point there must be no equal (=) after it like x+1 pe and issi tarha a mix of other conditions
+ if (r>0 && grid[r-1][c]==equalsign)  //so to check if its isolated n a dest point there must be no equal (=) after it like x+1 pe and issi tarha a mix of other conditions
    {is_isolated=false;}
- else if (r<rows-1&&grid[r+1][c]==equal) 
+ else if (r<rows-1&&grid[r+1][c]==equalsign) 
    {is_isolated=false;}
  else if (c>0&&grid[r][c-1]==underscore) 
     {is_isolated=false;}
@@ -303,15 +304,15 @@ void writeMetrics()
     {
      cout << "Failed to open metrics.txt" << endl;
        }
-else if (file,is_open())
+else if (file.is_open())
 {
     file<<"Train Simulation Metrics"<<endl;            //final matric making starts yahan se
     file<<"Total Ticks :"<<currentTick<<endl;               //we output total ticks, total trains jo deliver hui n crashed ones
     file<<"Total Trains :"<<NumTrains<<endl;
     file<<"Trains Delivered :"<<metric_delivered<<endl;
-    file<<"Trains Crashed :" <<trains_crashed<<endl;
+    file<<"Trains Crashed :" <<metric_crashed<<endl;
 
- int collisions=trains_crashed/2;                //also mentions jitni coll hui
+ int collisions=metric_crashed/2;                //also mentions jitni coll hui
  file<<"Total Train Collisions That Happened :"<<collisions<<endl;
 
  float throughput=0.0;
@@ -340,11 +341,11 @@ else if (file,is_open())
        avgWait=(float)totalWait / activeTrains;
     }
  else
-  { avgWait = 0.0;}
-  
+  {
+      avgWait = 0.0;
+      }
  file<<"Average Wait :"<<avgWait<<endl;
- file<<"Total Flips :"<<totalSwitchFlips<<endl;
- file<<"Safety Tiles Used: "<<safetytiles<<endl;
+ file<<"Safety Tiles Used: "<<safetyTilesUsed<<endl;
  file.close();
 }
 }
