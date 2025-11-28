@@ -9,8 +9,8 @@
 
 // ----------------------------------------------------------------------------
 // GRID CONSTANTS
-const int max_rows=50;
-const int max_cols=50;
+const int max_rows=100;
+const int max_cols=100;
 
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
