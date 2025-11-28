@@ -83,7 +83,6 @@ cout<<"Switch flips beeing queued"<<endl;
 queueSwitchFlips();
 cout<<"Collisions being detected"<<endl;
 detectCollisions();
-
  }
 
 
@@ -110,3 +109,4 @@ bool isSimulationComplete() {
     }
     return (active==0 && allspawned);
 }
+
