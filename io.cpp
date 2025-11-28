@@ -169,7 +169,7 @@ bool loadLevelFile(const string& filename)      //pass file ka name
           train_x[traincount]=x;
           train_y[traincount]=y;
           train_direction[traincount]=direction;
-          Train_id[traincount]=traincount;
+          Train_ids[traincount]=traincount;
           train_colorindex[traincount]=Sigcolor;
            traincount++;
              }
@@ -182,6 +182,7 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  {
    while(c<cols)
    {
+    char tile=grid[r][c];
      if (grid[r][c]==s_char&&spawnPointCount<50)
       {
          bool is_isolated=true;
@@ -197,8 +198,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
 
      if (is_isolated)
       {
-        Spawn_x[spawnPointCount]=r;
-        Spawn_y[spawnPointCount]=c;
+        spawnx[spawnPointCount]=r;
+        spawny[spawnPointCount]=c;
         sdirection[spawnPointCount]=0;
         spawnPointCount++;
      }
@@ -218,8 +219,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
 
  if (is_isolated==true)              //ye checks agar isolates tou its a dest point warna it aint and its j a tile
  {
-    Dest_x[destPointCount]=r;
-    Dest_y[destPointCount]=c;
+    Destx[destPointCount]=r;
+    Desty[destPointCount]=c;
      destPointCount++; }
         }
     }
@@ -307,7 +308,7 @@ else if (file,is_open())
     file<<"Train Simulation Metrics"<<endl;            //final matric making starts yahan se
     file<<"Total Ticks :"<<currentTick<<endl;               //we output total ticks, total trains jo deliver hui n crashed ones
     file<<"Total Trains :"<<NumTrains<<endl;
-    file<<"Trains Delivered :"<<trains_delivered<<endl;
+    file<<"Trains Delivered :"<<metric_delivered<<endl;
     file<<"Trains Crashed :" <<trains_crashed<<endl;
 
  int collisions=trains_crashed/2;                //also mentions jitni coll hui
@@ -316,7 +317,7 @@ else if (file,is_open())
  float throughput=0.0;
  if (currentTick>0)
    {
-     throughput=(trains_delivered*100.0)/currentTick;
+     throughput=(metric_delivered*100.0)/currentTick;
        }
  file<<"Throughput :" << throughput<<" per 100 ticks"<<endl;
 
@@ -344,7 +345,7 @@ else if (file,is_open())
       }
  file<<"Average Wait :"<<avgWait<<endl;
  file<<"Total Flips :"<<totalSwitchFlips<<endl;
- file<<"Safety Tiles Used: "<<safetyTilesUsed<<endl;
+ file<<"Safety Tiles Used: "<<safetytiles<<endl;
  file.close();
 }
 }
