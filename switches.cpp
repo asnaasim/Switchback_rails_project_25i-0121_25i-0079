@@ -4,7 +4,8 @@
 #include "io.h"
 #include <iostream>
 #include <string>
-using namespace std;                       //we check direcfions ke liya ke what is train ki director right left up ya down
+using namespace std;    
+                   //we check direcfions ke liya ke what is train ki director right left up ya down
 void updateSwitchCounters(int index,int direction) 
 {
    if ((index>=0&&index<NumSwitches)&&(train_direction>=0&&train_direction<=3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
@@ -81,7 +82,7 @@ void applyDeferredFlips()
             currentstate_output=switchstatelabel0[i];}    //ismein you sirf check ke current state kiya hogi agar 0 then assign state0 to it
            else                                           //agar 1 hogi tou j assign state 1 and baad mein all of this is passed to the SwitchState wali file
             {  currentstate_output=switchstatelabel1[i];}             //logfile made in io.cpp
-            logSwitchState(CURRENT_TICK,switch_letter[i],switchmode[i],currentstate_output);
+            logSwitchState(currentTick,switch_letter[i],switchmode[i],currentstate_output);
             switch_queuedtoflip[i]=false;} 
         i++;}  }
           
@@ -155,8 +156,8 @@ void updateSignalLights()
             if (train_active[t]==false)
             {      continue;           }  //cont cuz yahan inactive wahan se terminate and move to jahan its active
            else if (train_active[t]==true){
-            int train_row = train_positions[t][0];
-            int train_col = train_positions[t][1];
+            int train_row=train_positions[t][0];
+            int train_col=train_positions[t][1];
            
             int row_diff=train_row-switch_row;
             int col_diff=train_col-switch_col;
@@ -167,7 +168,7 @@ void updateSignalLights()
                 int train_dir=train_direction[t];
                 bool train_approaching=false;
                
-                if ((train_dir==0&&train_row > switch_row && train_col==switch_col)||(train_dir==1&&train_col <switch_col&&train_row==switch_row)|| (train_dir==2&&train_row < switch_row && train_col==switch_col)||(train_dir==3&&train_col >switch_col&&train_row==switch_row))    
+                if ((train_dir==0&&train_row>switch_row && train_col==switch_col)||(train_dir==1&&train_col <switch_col&&train_row==switch_row)|| (train_dir==2&&train_row < switch_row && train_col==switch_col)||(train_dir==3&&train_col >switch_col&&train_row==switch_row))    
                   {
                     train_approaching=true;        //checks agar trains coming tab we do yellow
                      }
@@ -225,7 +226,7 @@ void toggleSwitchState(int index)
             state=switchstatelabel0[index];}    //ismein you sirf check ke current state kiya hogi agar 0 then assign state0 to it
            else                                           //agar 1 hogi tou j assign state 1 and baad mein all of this is passed to the SwitchState wali file
             { state=switchstatelabel1[index];}             //logfile made in io.cpp
-            logSwitchState(CURRENT_TICK,switch_letter[index],switchmode[index],state);
+            logSwitchState(currentTick,switch_letter[index],switchmode[index],state);
 }
 
 int getSwitchStateForDirection(int index,int Entrydirection)
