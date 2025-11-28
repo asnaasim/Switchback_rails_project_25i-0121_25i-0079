@@ -3,7 +3,6 @@
  
 extern *grid;    // extern accesses them external source se 
 extern int cols; 
-extern seed;
 extern int CURRENT_TICK;
 extern int destPointCount;
  extern char switch_letter[26];
@@ -14,6 +13,7 @@ extern int switchstatelabel1[26];
 extern int switch_kvalues[26][4];
 extern int train_spawnticks[100];
 extern int train_x[100];
+extern int seeds;
 extern int train_y[100];
 extern int train_direction[100];
 extern int train_ids[100];
