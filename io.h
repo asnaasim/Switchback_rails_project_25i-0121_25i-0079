@@ -3,6 +3,7 @@
  
 extern *grid;    // extern accesses them external source se 
 extern int cols; 
+extern seed;
 extern int CURRENT_TICK;
 extern int destPointCount;
  extern char switch_letter[26];
