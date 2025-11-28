@@ -26,8 +26,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  ifstream file(filename);
  if (!file.is_open())       //we do file hangling that is checking file availaboe hai ya nae
  {
- cout<<"Error opening level file:"<< filename << endl;
- return false;
+   cout<<"Error opening level file:"<< filename << endl;
+    return false;
  }
 
  string Line;
@@ -71,7 +71,7 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  {
  if (getline(file, Line))
  {
-   weather=trim(Line);                   // these function for the weather checks agar rain normal ya fog
+   string weather=trim(Line);                   // these function for the weather checks agar rain normal ya fog
      if (weather=="RAIN")
         weatherMode= WEATHER_RAIN;
       else if (weather=="FOG")
@@ -82,15 +82,14 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  }
  else if (Line.find("MAP:") != string::npos)
  {
- header_reading=false;
- map_reading=true;
+     header_reading=false;
+     map_reading=true;
 
- grid = new char*[rows];
- originalGrid = new char*[rows];
+char originalGrid[70][70];
  for (int r=0; r<rows;r++)
  {
- grid[r]=new char[cols];
- originalGrid[r]=new char[cols];
+ grid[r]=char[cols];
+ originalGrid[r]=char[cols];
  }
 
    getline(file, Line);
@@ -119,6 +118,7 @@ bool loadLevelFile(const string& filename)      //pass file ka name
             tile = ' ';
          grid[map_ind][C]=tile;
          originalGrid[map_ind][C]=tile;
+         C++;
       }
     map_ind++;
    }
@@ -163,15 +163,15 @@ bool loadLevelFile(const string& filename)      //pass file ka name
 
     if (iss>>tick>>x>>y>>direction>>Sigcolor)
        {
-        if (traincount<100)
+        if (NumTrains<100)
          {
-          train_spawnticks[traincount]=tick;                //ye sab arrs for train rel sab kuch we read we add yahan pe to keep a track and map them index to index
-          train_x[traincount]=x;
-          train_y[traincount]=y;
-          train_direction[traincount]=direction;
-          Train_ids[traincount]=traincount;
-          train_colorindex[traincount]=Sigcolor;
-           traincount++;
+          train_spawnticks[NumTrains]=tick;                //ye sab arrs for train rel sab kuch we read we add yahan pe to keep a track and map them index to index
+          train_x[NumTrains]=x;
+          train_y[NumTrains]=y;
+          train_direction[NumTrains]=direction;
+          Train_ids[NumTrains]=NumTrains;
+          train_colorindex[NumTrains]=Sigcolor;
+          NumTrains++;
              }
          }
      }
@@ -219,8 +219,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
 
  if (is_isolated==true)              //ye checks agar isolates tou its a dest point warna it aint and its j a tile
  {
-    Destx[destPointCount]=r;
-    Desty[destPointCount]=c;
+    destx[destPointCount]=r;
+    desty[destPointCount]=c;
      destPointCount++; }
         }
     }
@@ -340,9 +340,8 @@ else if (file,is_open())
        avgWait=(float)totalWait / activeTrains;
     }
  else
-  {
-      avgWait = 0.0;
-      }
+  { avgWait = 0.0;}
+  
  file<<"Average Wait :"<<avgWait<<endl;
  file<<"Total Flips :"<<totalSwitchFlips<<endl;
  file<<"Safety Tiles Used: "<<safetytiles<<endl;
