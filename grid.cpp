@@ -10,7 +10,7 @@ bool isInBounds(int x,int y)           //checks if entered x n y are in the rang
 }
 bool isTrackTile(char tile)       //checks tiles ki vals the train can move on
  {
-    if (tile=='-'||tile=='|'||tile=='/'||tile=='\\'||tile=='+'||tile=='='||tile=='S'||tile=='D'||(tile>='A'&&tile<='Z'))
+    if (tile=='-'||tile=='/'||tile=='\\'||tile=='+'||tile=='|'||tile=='='||tile=='S'||tile=='D'||(tile>='A'&&tile<='Z'))
       return true;
     else 
       return false;
@@ -18,9 +18,9 @@ bool isTrackTile(char tile)       //checks tiles ki vals the train can move on
 
 bool isSwitchTile(char tile) 
  {
-    if (tile>='A'&&tile<='Z')
+    if (tile >= 'A' && tile<='Z')
       {return true;}
-    else if(tile<'A'||tile>'Z')          //bas checks ke A se Z
+    else if(tile <'A' || tile >'Z')          //bas checks ke A se Z
       {return false;}
  }
 
@@ -28,7 +28,7 @@ int getSwitchIndex(char tile)
  {
    int index;
    index=tile-'A';
-   if (tile>='A'&&tile<='Z')
+   if (tile >='A' && tile <= 'Z')
       return (index);
    else
       return (-1); 
@@ -36,9 +36,9 @@ int getSwitchIndex(char tile)
 bool isSpawnPoint(int x,int y) //checks spawn points ki vals by comparing their x and y vals w int ki x and y vals
  {     
       int index=0;
-      while (index<spawnPointCount) 
+      while (index < spawnPointCount) 
       {
-        if (Spawn_x[index]==x&&Spawnt_y[index]==y) 
+        if (Spawn_x[index]==x && Spawn_y[index]==y) 
             return true;
         index++;
       }
@@ -49,7 +49,7 @@ bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing 
   int index=0;
       while (index<destPointCount) 
       {
-        if ((Dest_x[index]==x)&&(Dest_y[index]==y)) 
+        if ((Dest_x[index]==x) && (Dest_y[index]==y)) 
         { 
            return true;
          }
