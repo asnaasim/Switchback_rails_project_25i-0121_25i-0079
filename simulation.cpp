@@ -5,6 +5,7 @@
 #include "io.h"
 #include "grid.h"
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include <iostream>
 using namespace std;
@@ -29,7 +30,7 @@ void printGrid(){
             int x= train_x[i];
             int y= train_y[i];
             if (isInBounds(x, y)){
-                display[y][x]='0'+(i%10);
+                display[x][y]='0'+(i%10);
             }
         }
     }
@@ -43,8 +44,8 @@ void printGrid(){
     cout<<"\nActive Trains: \n";
 for (int i=0; i<NumTrains; i++){
     if (train_status[i]==TRAIN_MOVING || train_status[i]== TRAIN_DELAYED || train_status[i]== TRAIN_WAITING) {
-        const char* dirNames[]= {"UP", "RIGHT", "DOWN", "LEFT"};
-        const char* stateNames[]= {"INACTIVE", "WAITING", "MOVING","CRASHED", "DELAYED", "ARRIVED"};
+        const string dirNames[]= {"UP", "RIGHT", "DOWN", "LEFT"};
+        const string stateNames[]= {"INACTIVE", "WAITING", "MOVING","CRASHED", "DELAYED", "ARRIVED"};
         cout<<" Train "<<i<<" at (" <<train_x[i]<<","<<train_y[i]<<") moving "<< dirNames[train_direction[i]]<<" state: "<<stateNames[train_status[i]]<<endl;}}
         cout<<"Delivered: "<<metric_delivered<< " \n Crashed: "<<metric_crashed<<"\n";    }
 
@@ -78,9 +79,25 @@ spawnTrainsForTick();
 cout<<"route determination underway.."<<endl;
 determineAllRoutes();
 cout<<"switch counters are now being updated.."<<endl;
-updateSwitchCounters(*train_x, *train_direction);
+//updation of switch counters actuve trains kei liye
+for (int i=0; i<NumTrains; i++){
+    if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_WAITING){
+        int x= train_x[i];
+        int y=train_y[i];
+        if (isInBounds(x, y)){
+            char tile= grid[x][y];
+            if (isSwitchTile(tile)){
+                int switchIndex=getSwitchIndex(tile);
+                if (switchIndex>=0){
+                    updateSwitchCounters(switchIndex, train_direction[i]);
+                }
+            }
+        }
+    }
+}
 cout<<"Switch flips beeing queued"<<endl;
 queueSwitchFlips();
+applyDeferredFlips();
 cout<<"Collisions being detected"<<endl;
 detectCollisions();
 cout<<"Moving trains"<<endl;
