@@ -1,3 +1,4 @@
+
 #ifndef SIMULATION_STATE_H
 #define SIMULATION_STATE_H
 
@@ -45,6 +46,8 @@ const int SWITCH_MODE_GLOBAL=1;
     const int WEATHER_RAIN=0;
     const int WEATHER_NORMAL=1;
     const int WEATHER_FOG=2;
+
+    extern int totalWaitTicks;
 
 // ----------------------------------------------------------------------------
 // SIGNAL CONSTANTS
@@ -156,7 +159,7 @@ extern int emergencyhalt_y;
 extern int emergencyhalt_timer;
 extern int totalSwitchFlips;
 extern int signalViolations;
-extern int totalWaitTicks; 
+
 
 // ----------------------------------------------------------------------------
 // INITIALIZATION FUNCTION
