@@ -147,6 +147,8 @@ bool determineNextPosition(int trainindex) {
 // ----------------------------------------------------------------------------
 int getNextDirection(char tiletype, int x, int y, int currentdirection ) {
      //direction based on tile type
+     (void)x;
+     (void)y;
      //---straight tiles ki condition---//
     if (tiletype=='-' || tiletype=='|' || tiletype=='='|| tiletype=='S'||tiletype=='D'){
         return currentdirection;        //will keep movng in same direction
@@ -182,6 +184,7 @@ int getNextDirection(char tiletype, int x, int y, int currentdirection ) {
             return DIR_RIGHT;
             
         }
+    }
     //crossings kei liye
     if ( tiletype=='+'){
         return currentdirection;
@@ -203,13 +206,10 @@ int getNextDirection(char tiletype, int x, int y, int currentdirection ) {
             if (exitdirection=='2') return DIR_DOWN;
             if (exitdirection=='3') return DIR_LEFT;
         }
-
     }
     return currentdirection;
     }
 
-
-}
 
 // ----------------------------------------------------------------------------
 // SMART ROUTING AT CROSSING - Route train to its matched destination
