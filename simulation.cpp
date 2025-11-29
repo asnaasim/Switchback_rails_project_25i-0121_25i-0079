@@ -101,7 +101,7 @@ applyDeferredFlips();
 cout<<"Collisions being detected"<<endl;
 detectCollisions();
 cout<<"Moving trains"<<endl;
-moveAllTrains;
+moveAllTrains();
 printGrid();
 currentTick++;
  }
