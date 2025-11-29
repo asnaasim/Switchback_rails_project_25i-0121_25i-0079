@@ -4,9 +4,6 @@
 #include <iostream>
 using namespace std;
 
-
-
-
 bool isInBounds(int x,int y)           //checks if entered x n y are in the range of arr
 {
     if (x>=0&&x<rows&&y>=0&&y<cols)
@@ -76,13 +73,13 @@ bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for 
         if (tile=='-'||tile=='|')            //safety tile can only be toggled agar - or | ho. and if sucessfully toggled tou true warna false
        {
         grid[x][y]='=';
-        safetyTilesUsed++;                    //use of stfy tile is inc cuz toggle hore hai
+        safetytiles++;                    //use of stfy tile is inc cuz toggle hore hai
         return true;
        }
        else if (tile=='=')                                      
          {
         grid[x][y]=originalGrid[x][y];
-        safetyTilesUsed--;                                                               
+        safetytiles--;                                                               
         return true;   }}
     
     return false; 
