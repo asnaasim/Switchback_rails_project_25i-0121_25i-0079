@@ -4,241 +4,277 @@
 #include "io.h"
 #include <iostream>
 #include <string>
-using namespace std;    
-                                             
- void updateSwitchCounters(int index,int direction) 
-  {  
-                                 //we check direcfions ke liya ke what is train ki director right left up ya down
-   if ((index>=0&&index<NumSwitches)&&( train_direction[index]==0||train_direction[index]==1||train_direction[index]==2||train_direction[index]==3))   //if entered index and dir are within limits so the switchcounter array will inc warna waisa hi stays the same
-     {
-        if (train_direction[index]==0)
-        {
-           switch_counters[index][0]+=1;          //up counter will inc
-        }
-        else if(train_direction[index]==2)
-        {
-          switch_counters[index][2]+=1;                     //jo bhi direction we get uske accord we can inc the counters we intilaised simulation mein in switch struct
-        }
-        else if(train_direction[index]==3)
-        {
-           switch_counters[index][3]+=1;             //left counter will inc
-        }
-        else if(train_direction[index]==1)
-        {
-           switch_counters[index][1]+=1;                //right counter will inc
-        }
-        else{
-            cout<<"invalid direction variable"<<endl;
-        }
-     }
- }
+#include <cstdlib>
+using namespace std;
 
- void queueSwitchFlips() 
-  {  
-   bool if_flip=false;
-   for (int i=0; i<NumSwitches;i++)
-   {
-    if (switch_letter[i]=='\0')
-    {continue;                    //skipping the jaga jahan no letter is there bas only null character is there
+void updateSwitchCounters(int index, int direction)
+{
+    if ((index >= 0 && index < NumSwitches) && (direction >= 0 && direction <= 3))
+    {
+        switch_counters[index][direction] += 1;
+        switch_globalcounter[index] += 1;
     }
+}
 
-    else if (switch_kvalues[i][0]>0 &&switch_counters[i][0]>= switch_kvalues[i][0]) //comparing counterUp to kUp cuz agar ziada hai sirf then hi flip hoga
+void queueSwitchFlips()
+{
+    int i = 0;
+    while (i < NumSwitches)
     {
-            if_flip=true;
-           switch_counters[i][0]=0;          //reset na hua tou val will keep on exceeding aisa hi n gives ajeeb ans
-    }
-    else if (switch_kvalues[i][2]>0 &&switch_counters[i][2]>= switch_kvalues[i][2])
-    {
-        if_flip=true;
-        switch_counters[i][2]=0;                      //vals reset cuz threshhold exceed hogya hai alr
-    }
-    else if (switch_kvalues[i][1]>0 &&switch_counters[i][1]>= switch_kvalues[i][1])
-    {
-        if_flip=true;
-        switch_counters[i][1]=0;                      //vals reset cuz threshhold exceed hogya hai alr
-    }
-    else if (switch_kvalues[i][3]>0 &&switch_counters[i][3]>= switch_kvalues[i][3])
-    {
-        if_flip=true;
-        switch_counters[i][3]=0;                      //vals reset cuz threshhold exceed hogya hai alr
-    }
-
-    if(if_flip==true)
-    {
-        switch_queuedtoflip[i]=true;}
-   }
- }
-
- void applyDeferredFlips(){
-    int i=0;
-    while(i<NumSwitches)                 //agar queuedToFlip hoga which means agar wo flip hora ho which means ke dir counter kisi direction mein exceed hora ho
-    {
-        if (switch_queuedtoflip[i]==true)                //phir hi we apply ye poori logic
+        if (switch_letter[i] == '\0')
         {
-          switch_currentState[i]=(1-(switch_currentState[i]));   
-          char currentstate_output;                                 //ismein we flip the current state
-          if(switch_currentState[i]==0)
-          {
-            currentstate_output=switch_statelabel0[i][0];}    //ismein you sirf check ke current state kiya hogi agar 0 then assign state0 to it
-           else                                           //agar 1 hogi tou j assign state 1 and baad mein all of this is passed to the SwitchState wali file
-            {  currentstate_output=switch_statelabel1[i][0];}             //logfile made in io.cpp
-                 logSwitchState(currentTick,switch_letter[i],mode[i],currentstate_output);
-            switch_queuedtoflip[i]=false;} 
-        i++;  }
- }         
-
- void updateSignalLights(){
-   { 
-    int indxx=0;
-     while(indxx<NumSwitches)
-    {
-        if (switch_letter[indxx]!='\0')
-        {
-            signallights[indxx]=GREEN;  
-            }
-        else 
-            signallights[indxx]='\0';
-        indxx++;
-    }
-   
-    int i =0;
-    while(i<NumSwitches)
-    {
-        if (switch_letter[i]=='\0')
-        {
-            continue;  // Skip empty switches ki jaga cuz shuru mein we have fixed size tou empty things will be encountered
-           }
-       
-        int switch_row=switch_positions[i][0];
-        int switch_col=switch_positions[i][1];
-       
-        int next_row=switch_row;
-        int next_col=switch_col;
-       
-        int current_state=switch_currentState[i];
-        char exit_direction;
-               if (current_state==0)
-        {
-            exit_direction=switch_statelabel0[i][0];   //checks the value of current state fro, current state ka arr and then assigns exit val fro, switch takay it stays same path pe agar it encounters koye aur trains phir dir changes
-        }
-        else if (current_state==1)
-        {
-            exit_direction = switch_statelabel1[i][0];  }
-       
-        switch (exit_direction)
-        {
-          case '0':
-            {next_row=next_row-1;
-            break;}
-        
-          case '1':   
-            {next_col=next_col+1;
-            break;}
-        
-          case '2':
-        {
-            next_row=next_row+1;
-            break;        }
-          case '3': 
-        {
-            next_col=next_col-1;
-            break;   }
-          default:
-             cout<<"unexpected haulting!! reboot system"<<endl;  }
-       
-        if (next_row<0||next_row >=rows||next_col<0||next_col>=cols)
-        {
-            signallights[i]=RED;  
+            i++;
             continue;
         }
-       
-        for (int t=0;t<NumTrains;t++)
+
+        bool if_flip = false;
+
+        // Yahan we checl if any direction counter has reached its k-value threshold agar yes tou phir flip and 0 assign reset
+        if (switch_kvalues[i][0] > 0 && switch_counters[i][0] >= switch_kvalues[i][0])
         {
-            if (train_status[t]= TRAIN_INACTIVE)
-            {      continue;           }  //cont cuz yahan inactive wahan se terminate and move to jahan its active
-           else if (train_status[i]= !TRAIN_INACTIVE)
-           {
+            if_flip = true;
+            switch_counters[i][0] = 0;
+        }
+        else if (switch_kvalues[i][1] > 0 && switch_counters[i][1] >= switch_kvalues[i][1])
+        {
+            if_flip = true;
+            switch_counters[i][1] = 0;
+        }
+        else if (switch_kvalues[i][2] > 0 && switch_counters[i][2] >= switch_kvalues[i][2])
+        {
+            if_flip = true;
+            switch_counters[i][2] = 0;
+        }
+        else if (switch_kvalues[i][3] > 0 && switch_counters[i][3] >= switch_kvalues[i][3])
+        {
+            if_flip = true;
+            switch_counters[i][3] = 0;
+        }
+
+        if (if_flip == true)
+        {
+            switch_queuedtoflip[i] = true;
+        }
+        i++;
+    }
+}
+
+void applyDeferredFlips()
+{
+    int i = 0;
+    while (i < NumSwitches)
+    {
+        if (switch_queuedtoflip[i] == true)
+        {
+            switch_currentState[i] = 1 - switch_currentState[i];
+            
+            char currentstate_output;
+            if (switch_currentState[i] == 0)
+            {
+                currentstate_output = switch_statelabel0[i][0];
+            }
+            else
+            {
+                currentstate_output = switch_statelabel1[i][0];
+            }
+            
+            logSwitchState(currentTick, switch_letter[i], mode[i], currentstate_output);
+            switch_queuedtoflip[i] = false;
+        }
+        i++;
+    }
+}
+
+void updateSignalLights()
+{
+    // Initialize all signal lights to GREEN or null
+    int indxx = 0;
+    while (indxx < max_switches)
+    {
+        if (switch_letter[indxx] != '\0')
+        {
+            signallights[indxx] = GREEN;
+        }
+        else
+        {
+            signallights[indxx] = 0;
+        }
+        indxx++;
+    }
+
+    int i = 0;
+    while (i < NumSwitches)
+    {
+        if (switch_letter[i] == '\0')
+        {
+            i++;
+            continue;
+        }
+
+        int switch_row = switch_x[i];
+        int switch_col = switch_y[i];
+
+
+        int current_state = switch_currentState[i];
+        char exit_direction;
+        
+        if (current_state == 0)
+        {
+            exit_direction = switch_statelabel0[i][0];
+        }
+        else
+        {
+            exit_direction = switch_statelabel1[i][0];
+        }
+
+                                  // exit direction ko we check n then signal changings
+        int next_row = switch_row;         //agar too close tou red warna yellow if still close n far would be green
+        int next_col = switch_col;
+
+        switch (exit_direction)
+        {
+            case '0':            // for up
+            {
+                next_row = next_row - 1;
+                break;
+            }
+            case '1':             //  for right
+            {
+                next_col = next_col + 1;
+                break;
+            }
+            case '2':            //for diwn
+            {
+                next_row = next_row + 1;
+                break;
+            }
+            case '3':       // for left
+            {
+                next_col = next_col - 1;
+                break;
+            }
+            default:
+            {
+                cout << "Invalid exit direction for switch " << switch_letter[i] << endl;
+                break;
+            }
+        }
+
+
+        if (next_row < 0 || next_row >= rows || next_col < 0 || next_col >= cols)
+        {
+            signallights[i] = RED;
+            i++;
+            continue;
+        }
+                                  //yahan we check collision and for that red signal and
+        int t = 0;
+        while (t < NumTrains)
+        {
+            if (train_status[t] == TRAIN_INACTIVE || train_status[t] == TRAIN_CRASHED || train_status[t] == TRAIN_ARRIVED)
+            {
+                t++;
+                continue;
+            }
+
             int train_row=train_x[t];
             int train_col=train_y[t];
-           
+
+                                  // Calculate Manhattan distance from switch
             int row_diff=train_row-switch_row;
             int col_diff=train_col-switch_col;
-            int distance=abs(row_diff)+abs(col_diff);  // Manhattan distance cuz distance switch se hve to calc takay we can identigfy konsa colour to assign agay
-           
-            if (distance>0&&distance<=2)   //greater than 0 cuz 0 pe collision 2 pe yellow n us se kam pe we get red
+            int distance=abs(row_diff)+abs(col_diff);
+
+            if (distance>0&&distance<=2)
             {
                 int train_dir=train_direction[t];
                 bool train_approaching=false;
-               
-                if ((train_dir==0&&train_row>switch_row && train_col==switch_col)||(train_dir==1&&train_col <switch_col&&train_row==switch_row)|| (train_dir==2&&train_row < switch_row && train_col==switch_col)||(train_dir==3&&train_col >switch_col&&train_row==switch_row))    
-                  {
-                    train_approaching=true;        //checks agar trains coming tab we do yellow
-                     }
 
-
-                if (train_approaching&&signallights[i]==GREEN)
+                if ((train_dir==0&&train_row>switch_row&&train_col==switch_col)||    (train_dir==1 &&train_col<switch_col&&train_row==switch_row)||(train_dir==2 &&train_row<switch_row&&train_col==switch_col)||(train_dir==3&&train_col>switch_col&& train_row==switch_row))
                 {
-                    signallights[i]=YELLOW;   }
-            }
-           
-            if (train_row==next_row&&train_col==next_col)   //checks agar we assign red cuz agar sab occupied ho
-            {
-                signallights[i]=RED;  //we assign red to it cuz agar next tile occupied n wahan alr a trains there
-            }
-           
-            int train_next_row=train_row;
-            int train_next_col=train_col;
-            int train_dir=train_direction[t];
-           
-            switch(train_dir)                  // is point pe we calc where will our trains move agay and decide phir how do we go abt it
-            {                                          //this will check the direction agar 0 1 2 3 after which we make choice ke we move ooper, down left or right
-              case 0: 
-                     {train_next_row=train_next_row-1;
-                     break;}
-            case 1:
-                     {train_next_col=train_next_col+1;
-                     break;}
-            case 2: 
-                     {train_next_row=train_next_row+1;
-                     break;}
-            case 3: 
-                     {train_next_col=train_next_col-1;
-                     break;}
-            default:
-                             {cout<<"unexpected error!! system hault"<<endl;
-                             break;}
-            }
-           
-                                                                             // we will check yahan agar train ki next pos like x n y coords match next x n y coords movement specturm pe
-            if (train_next_row==next_row&&train_next_col==next_col)
-            {
-                signallights[i]=RED;   //when sig light get 2 matlab assign red cuz collision matlab train is viciniity mein hi
-            } }
-    }
-    i++;
-   }
- } }
+                    train_approaching=true;
+                }
 
- void toggleSwitchState(int index)
-  {                                                          
-     //gottamake sure ke index pe null charactr na ho and out of bounds na ho
-          switch_currentState[index]=1-switch_currentState[index]; 
-              char state;                                         //ismein we flip the current state
-          if(index>=0&&index<NumSwitches&&switch_letter[index]!='\0')               //allows the user to do things manually like right key press krke
-          {                                                     // its diff from deffered flips cuz wo happens to the tick once every round and ye wala only when right key ko dabaya
-            state=switch_statelabel0[index][0];}    //ismein you sirf check ke current state kiya hogi agar 0 then assign state0 to it
-           else                                           //agar 1 hogi tou j assign state 1 and baad mein all of this is passed to the SwitchState wali file
-            { state=switch_statelabel1[index][0];}             //logfile made in io.cpp
-            logSwitchState(currentTick,switch_letter[index],mode[index],state);
-  }
+                if (train_approaching==true&&signallights[i]==GREEN)
+                {
+                    signallights[i]=YELLOW;
+                }
+            }
 
- int getSwitchStateForDirection(int index,int Entrydirection)
-  {                                                       
-     //also used in agli files train wali for entry dir
-    if (index>=0&&index<NumSwitches)                   //we check index<NumSwitches cuz what if num of switches are kam than 26
+
+            if (train_row == next_row && train_col == next_col)
+            {
+                signallights[i] = RED;       //red jab train is v close and almost collision
+            }         
+            int train_next_row = train_row;
+            int train_next_col = train_col;
+            int train_dir = train_direction[t];
+
+            switch (train_dir)
+            {
+                case 0:          // upward direction
+                {
+                    train_next_row=train_next_row-1;
+                    break;
+                }
+                case 1:         // rightward dir
+                {
+                    train_next_col=train_next_col+1;
+                    break;
+                }
+                case 2:      //downward dir 
+                {
+                    train_next_row=train_next_row+1;
+                    break;
+                }
+                case 3:         //leftwards
+                {
+                    train_next_col=train_next_col-1;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+
+            if (train_next_row==next_row && train_next_col == next_col)
+            {
+                signallights[i] = RED;
+            }
+            
+            t++;
+        }
+        i++;
+    }}
+
+void toggleSwitchState(int index)
+{
+    if (index >= 0 && index < NumSwitches && switch_letter[index] != '\0')
     {
-      return(switch_currentState[index]);           //fetches state atthe index
-    }    
-    else                                     //  
-    {return -1; }                                      //we get -1 agar invalid ho index like outta range typa 
-   }
+        switch_currentState[index] = 1 - switch_currentState[index];
+        
+        char state;
+        if (switch_currentState[index] == 0)
+        {
+            state = switch_statelabel0[index][0];
+        }
+        else
+        {
+            state = switch_statelabel1[index][0];
+        }
+        
+        logSwitchState(currentTick, switch_letter[index], mode[index], state);
+    }
+}
+int getSwitchStateForDirection(int index, int direction)
+{
+    if (index >= 0 && index < NumSwitches)
+    {
+        return switch_currentState[index];
+    }
+    else
+    {
+        return -1;
+    }
+}
