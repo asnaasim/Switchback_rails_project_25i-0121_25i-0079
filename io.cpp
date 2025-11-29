@@ -12,6 +12,7 @@ const char equalsign = '=';
 const char underscore = '|';
 const char s_char='S';          //these consts will be unifrom poori jaga se like same so we declare as global
 const char d_char='D';
+string weather;
 
 string trim(const string& str)
 {                                                        //yahan we make trim to cut extra spaces in a a line
@@ -86,14 +87,6 @@ bool loadLevelFile(const string& filename)      //pass file ka name
  header_reading=false;
  map_reading=true;
 
- grid = char[rows];
- originalGrid = char [rows];
- for (int r=0; r<rows;r++)
- {
- grid[r]=char[cols];
- originalGrid[r]=char[cols];
- }
-
    getline(file, Line);
    continue;
    }
@@ -117,9 +110,10 @@ bool loadLevelFile(const string& filename)      //pass file ka name
          if (C<len)
            tile=Line[C];
          else
-            tile = ' ';
+            {tile = ' ';}
          grid[map_ind][C]=tile;
          originalGrid[map_ind][C]=tile;
+       C++;  
       }
     map_ind++;
    }
@@ -135,9 +129,10 @@ bool loadLevelFile(const string& filename)      //pass file ka name
 
  istringstream iss(Line);
  char letter;
- string currentState;
+ char currentState;
  int mode;
- char state0, state1;
+ char state0;
+ char state1;
  int k1,k2,k3,k4;
 
  if (iss>>letter>>currentState>>mode>>k1>>k2>>k3>>k4>> state0 >> state1)
@@ -148,8 +143,8 @@ bool loadLevelFile(const string& filename)      //pass file ka name
      switch_letter[index]=letter;                 //ye pooray saray arrays for switch rel things these are what we store
      switch_currentState[index]=currentState;
      switchmode[index] =mode;
-     switch_statelabel0[index]=state0;
-     switch_statelabel1[index]=state1;
+     switch_statelabel0[index][0] = state0;  // ye stores the char ko first pos of thearr
+      switch_statelabel1[index][0] = state1;
      switch_kvalues[index][0]=k1;
      switch_kvalues[index][1]=k2;
       switch_kvalues[index][2]=k3;
@@ -255,7 +250,7 @@ void initializeLogFiles()
       }
 }
 
-void logTrainTrace(int tick,int train_id,int x,int y,int dir,int state)
+void logTrainTrace(int tick,int train_id,int x,int y,int dir,char state)
 {
    ofstream file("out/trace.csv",ios::app);
    if (!file.is_open())
@@ -269,7 +264,7 @@ void logTrainTrace(int tick,int train_id,int x,int y,int dir,int state)
        }
 }
 
-void logSwitchState(int tick,char Switch,const string& mode,const string& state)
+void logSwitchState(int tick,char Switch, int& mode,char& state)
  { 
   ofstream file("out/switches.csv",ios::app);              //all these are passed in switch state wali csv pehla we opem and then write contents in the alr made ones
    if (!file.is_open())
