@@ -1,6 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
-//simple header file as barely any constants used, just utilisation of an additional funtion
+#include <string>
+using std::string;
 
 // ============================================================================
 // SIMULATION.H - Simulation tick logic
@@ -8,7 +9,7 @@
 
 // ----------------------------------------------------------------------------
 // MAIN SIMULATION FUNCTION
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Run one simulation tick.
 void simulateOneTick();
 
