@@ -230,7 +230,7 @@ int getSmartDirectionAtCrossing(int trainindex, int current_x, int current_y, in
     }
     else {
         if (dy>0 && currentdirection != DIR_LEFT) return DIR_RIGHT;
-       if (dy>0 && currentdirection != DIR_RIGHT) return DIR_LEFT; 
+       if (dy<0 && currentdirection != DIR_RIGHT) return DIR_LEFT; 
     }
     return currentdirection;
 }
