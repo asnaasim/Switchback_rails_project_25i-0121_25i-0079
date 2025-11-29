@@ -46,7 +46,8 @@ int train_waitticks[max_trains];
 int train_colorindex[max_trains];     //differentiating trains 
 int train_delaytimer[max_trains];
 int Train_ids[max_trains];
-    
+
+int totalWaitTicks=0; 
 // SWITCHES
  int NumSwitches=0;
 //<---basic switches--->//
@@ -105,7 +106,6 @@ int safetytiles=0;
 
     int totalSwitchFlips=0;
     int signalViolations=0;
-    int totalWaitTicks=0; 
 
     int signallights[50];
 
@@ -134,7 +134,7 @@ void initializeSimulationState()
         }
         i++;
     }
-    
+    totalWaitTicks=0;
     //initializing trains
     NumTrains=0;
     i=0;
@@ -215,7 +215,6 @@ void initializeSimulationState()
     metric_totaltrains=0;
     totalSwitchFlips=0;
     signalViolations=0;
-    totalWaitTicks=0;
 
     //variables that are not arrays
     currentTick=0;
