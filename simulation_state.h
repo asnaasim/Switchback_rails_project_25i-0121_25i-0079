@@ -144,7 +144,7 @@ extern char levelName[100];
     extern int metric_collisions;
     extern int metric_totaltrains;
     extern int metric_totaltrains;
-    extern int safetyTilesUsed;
+    extern int safetytiles;
     extern int signallights[50];
 
 // ----------------------------------------------------------------------------
