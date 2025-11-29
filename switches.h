@@ -1,17 +1,14 @@
 #ifndef SWITCHES_H
 #define SWITCHES_H
 #include <string>
+#include "simulation_state.h"
 using std::string;
 
-
-void updateSwitchCounters(int index,int direction);
+void updateSwitchCounters(int index, int direction);
 void queueSwitchFlips();
 void applyDeferredFlips();
-
-// SIGNAL CALCULATION
-// this will Update switch signal colors.
 void updateSignalLights();
-
 void toggleSwitchState(int index);
-int getSwitchStateForDirection(int index,int Entrydirection);
+int getSwitchStateForDirection(int index, int direction);
+
 #endif
