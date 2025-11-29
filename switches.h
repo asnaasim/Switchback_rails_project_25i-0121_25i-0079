@@ -1,11 +1,15 @@
 #ifndef SWITCHES_H
 #define SWITCHES_H
+#include <string>
+using std::string;
 
 
 void updateSwitchCounters(int index,int direction);
 void queueSwitchFlips();
 void applyDeferredFlips();
 
+// SIGNAL CALCULATION
+// this will Update switch signal colors.
 void updateSignalLights();
 
 void toggleSwitchState(int index);
