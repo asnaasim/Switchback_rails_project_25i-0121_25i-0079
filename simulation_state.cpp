@@ -87,7 +87,7 @@ int currentTick=0;
 int seed=0;
 int weathermode=  WEATHER_NORMAL;
 char levelName[100];
-int safetyTilesUsed=0;
+int safetytiles=0;
 
 // METRICS
     int metric_delivered=0;     //num of trains delivered
@@ -200,7 +200,7 @@ void initializeSimulationState()
     currentTick=0;
     seed=0;
     levelName[0]='\0';
-    safetyTilesUsed=0;
+    safetytiles=0;
     weathermode= WEATHER_NORMAL;
 
     for (int i=0; i<50; i++){
