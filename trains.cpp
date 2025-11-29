@@ -87,13 +87,13 @@ bool determineNextPosition(int trainindex) {
     if (currentdirection==DIR_UP){
         nextx=currentx-1;
     }
-    else if (currentdirection=DIR_RIGHT){
+    else if (currentdirection==DIR_RIGHT){
         nexty=currenty+1;
     }
-    else if (currentdirection=DIR_DOWN){
+    else if (currentdirection==DIR_DOWN){
         nextx=currentx+1;
     }
-    else if (currentdirection=DIR_LEFT){
+    else if (currentdirection==DIR_LEFT){
         nexty=currenty-1;
     }
 
@@ -121,7 +121,7 @@ bool determineNextPosition(int trainindex) {
         nextdirection=getSmartDirectionAtCrossing(trainindex, nextx, nexty, currentdirection);
     }
     else {
-        nextdirection= getNextDirection(nextx, nexty, currentdirection, next_tile);
+        nextdirection= getNextDirection(next_tile, nextx, nexty, currentdirection);
     }
     // storing the next planned move
     train_nextx[trainindex]=nextx;
@@ -246,7 +246,7 @@ void checkArrivals() {
                 train_status[i]=TRAIN_ARRIVED;
                 metric_delivered++;
                 std::cout<<"Train number"<<i<<"arrived at destination"<<endl;
-                logTrainTrace(i);
+                logTrainTrace(currentTick, i, train_x[i], train_y[i], train_direction[i], 'A');
 
             }
         }
@@ -385,6 +385,7 @@ void detectCollisions() {
         }
     }
 }
+}
 
 
 // ----------------------------------------------------------------------------
@@ -435,3 +436,4 @@ void updateEmergencyHalt() {
         }
     }
 }
+
