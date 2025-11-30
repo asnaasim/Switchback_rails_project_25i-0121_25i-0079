@@ -277,7 +277,6 @@ void moveAllTrains() {
         if (train_plannedmove[i]){
             train_previousx[i]=train_x[i];
             train_previousy[i]=train_y[i];
-
             train_x[i]=train_nextx[i];
             train_y[i]=train_nexty[i];
             train_direction[i]=train_nextdirection[i];
@@ -294,7 +293,6 @@ void detectCollisions(){
         if (!train_plannedmove[i] || train_status[i]==TRAIN_CRASHED) {
             continue;
         }
-        
         for (int j = i + 1; j < NumTrains; j++) {
             if (!train_plannedmove[j] || train_status[j]==TRAIN_CRASHED) {
                 continue;
@@ -317,7 +315,7 @@ void detectCollisions(){
                 // the priority wali cheez
                 if (distanceI > distanceJ) {
                     train_status[j] = TRAIN_WAITING;
-                    train_waitticks[j]++;        //train closer to destination, to move towards the destination
+                    train_waitticks[j]++;        //train further away from destination, to move towards the destination due to priority
                     totalWaitTicks++;
                     train_plannedmove[j] = false;
                     cout << "Collision: Train " << j << " waiting" << endl;
@@ -340,7 +338,7 @@ void detectCollisions(){
         }
     }
 }
-
+//
 void applyEmergencyHalt(){
     if (!emergencyhalt_active){
         return;}
@@ -365,7 +363,7 @@ void applyEmergencyHalt(){
         }
     }
 }
-//to activate or disable emergency halt
+// emergency halt ko activate ya deactivate karey ga
 void updateEmergencyHalt(){            
     if (emergencyhalt_active==true){
         emergencyhalt_timer--;
