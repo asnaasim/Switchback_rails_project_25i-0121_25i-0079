@@ -116,18 +116,44 @@ currentTick++;
 bool isSimulationComplete() {
     //loop kei all trains r delivered/crashed
     int active=0;
+    int arrived=0;
+    int crashed=0; 
+    int inactive=0;
     for (int i=0; i<NumTrains; i++){
-        if (train_status[i] != TRAIN_INACTIVE && train_status[i] != TRAIN_ARRIVED && train_status[i] != TRAIN_CRASHED){
+        if (train_status[i] == TRAIN_MOVING && train_status[i] == TRAIN_WAITING && train_status[i] != TRAIN_DELAYED){
             active++;
+        }
+        else if (train_status[i]==TRAIN_ARRIVED){
+            arrived++;
+        }
+        else if (train_status[i]==TRAIN_CRASHED){
+            crashed++;
+        }
+        else if (train_status[i]==TRAIN_INACTIVE){
+            inactive++;
         }
     }
     //check to see if trains are attempted to spawn
-    bool allspawned=true;
+    bool unspawned=false;
         for (int i=0; i<NumTrains; i++){
-        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] <=currentTick){
-            allspawned=false;
+        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] >=currentTick){
+            unspawned=true;
             break;
         }
     }
-    return (active==0 && allspawned);
+    cout<<"Simulation Status Check! Current Tick= "<<currentTick<<endl;
+    cout<<"Total Trains: " <<NumTrains<<endl;
+    cout<<"Active (moving/waiting/delayed): "<<active<<endl;
+    cout<<"Arrived: "<<arrived<<endl;
+    cout<<"Crashed: "<<crashed<<endl;
+    cout<<"Inactive: "<<inactive<<endl;
+    cout << " Has unspawned: " << (unspawned ? "YES" : "NO") << endl;
+        bool isComplete = (active==0 && !unspawned);
+    
+    if (isComplete) {
+        cout << "  >>> SIMULATION COMPLETE <<<" << endl;
+    }
+    
+    return isComplete;
+
 }
