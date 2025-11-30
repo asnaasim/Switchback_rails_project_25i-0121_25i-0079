@@ -1,14 +1,17 @@
 #include "app.h"
-
 #include "../core/simulation_state.h"
 #include "../core/simulation.h"
 #include "../core/io.h"
+#include "../core/grid.h"
+#include <fstream>
+
+#include "../core/switches.h"
 #include <iostream>
 
 #include <string>
 using namespace std;
 
-int main()
+int main() 
 {
     int level;
     cout << "----------Welcome to Asna and Zainab's Train simulation game-------------" << endl;
@@ -19,36 +22,35 @@ int main()
     cout << "4. Complex Level" << endl;
     cout << "Enter your choice: ";
     cin >> level;
-   
-
+    
     if (cin.fail()) {
         cout << "Invalid input. Please enter a number between 1 and 4." << endl;
         return 1;
     }
-   
+    
     bool done = false;
     string levelFile;
-   
+    
     switch (level)
     {
         case 1:
         {
-            levelFile = "easy_level.lvl";
+            levelFile ="data/levels/easy_level.lvl";
             break;
         }
-        case 2:
+        case 2: 
         {
-            levelFile = "medium_level.lvl";
+            levelFile = "data/levels/medium_level.lvl";
             break;
         }
-        case 3:
+        case 3: 
         {
-            levelFile = "hard_level.lvl";
+            levelFile = "data/levels/hard_level.lvl";
             break;
         }
         case 4:
         {
-            levelFile = "complex_network.lvl";
+            levelFile = "data/levels/complex_network.lvl";
             break;
         }
         default:
@@ -56,31 +58,31 @@ int main()
             cout<<"Invalid level entered :("<<endl;
             cout<<"Please choose a number between 1 and 4."<<endl;
             return 1;
+            break;
         }
     }
-   
+    
     done=loadLevelFile(levelFile);
-   
+    cout<<"loaded lvl file"<<endl;
+    
     if (done==false)
     {
         cout << "Error: Failed to load level file "<< endl;
-        cout << "Please ensure the file is in the correct directory." << endl;
         return 1;
     }
-   
+    
     else
     {
     cout << "Level loaded successfully!" << endl;
         cout << "Initializing simulation..." << endl;
-   
-   
-    if (!initializeApp())
-    {    
+    
+    
+    if (!initializeApp()) 
+    {     
         cout << "Error: Failed to initialize application window" << endl;
         return 1;
     }
-    initializeApp();    
-
+    
     cout<<"=+=+=+=+=+=+=+=+=+=CONTROLS=+=+=+=+=+=+=+=+" << endl;
     cout<<"IMPORTANT!!" << endl;
     cout<<" press *SPACE*....... Pause or resume simulation" << endl;
@@ -90,18 +92,13 @@ int main()
     cout<<" use *Right-click*... Toggle switch state" << endl;
     cout<<" use *Middle-drag*... Pan camera view" << endl;
     cout<<" use *Mouse wheel*... Zoom in/out" << endl;
-    cout<<"=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+" << endl;
 
     cout<<"Starting simulation..." << endl;
     cout<<"The game begins PAUSED. Press SPACE to start!" << endl;
-    cout<<endl;
+
     runApp();
-   
-    renderSimulationState();
-   
     cleanupApp();
 
-   
     cout<<endl;
     cout<<"=+=+=+=+=+=+=Simulation Complete=+=+=+=+=+="<<endl;
     cout<<"End of game reached!!"<<endl;
