@@ -7,14 +7,6 @@
 #include <string>
 #include <iostream>
 using namespace std;
-char grid[max_rows][max_cols];
-char originalGrid[max_rows][max_cols];
-int rows, cols;
-char tile;
-int spawnPointCount, destPointCount;
-int destx[MAX_DESTINATION], desty[MAX_DESTINATION], spawnx[MAX_SPAWN], spawny[MAX_SPAWN];
-int safetytiles=0;
-
 bool isInBounds(int x,int y)           //checks if entered x n y are in the range of arr
 {
     if (x>=0&&x<rows&&y>=0&&y<cols)
