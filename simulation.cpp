@@ -74,38 +74,51 @@ initializeLogFiles();
 // ----------------------------------------------------------------------------
 
 void simulateOneTick() {
-cout<<"The tick is currently: "<<currentTick<<endl;
-cout<<"trains will now be spawned.."<<endl;
-spawnTrainsForTick();
-cout<<"route determination underway.."<<endl;
-determineAllRoutes();
-cout<<"switch counters are now being updated.."<<endl;
-//updation of switch counters actuve trains kei liye
-for (int i=0; i<NumTrains; i++){
-    if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_WAITING){
-        int x= train_x[i];
-        int y=train_y[i];
-        if (isInBounds(x, y)){
-            char tile= grid[x][y];
-            if (isSwitchTile(tile)){
-                int switchIndex=getSwitchIndex(tile);
-                if (switchIndex>=0){
-                    updateSwitchCounters(switchIndex, train_direction[i]);
+    cout << "\n========================================" << endl;
+    cout << "           TICK " << currentTick << endl;
+    cout << "========================================" << endl;
+    //to spawn the trains
+    cout<<"phase 1: spawning trains"<<endl;
+    spawnTrainsForTick();
+    //to determine the route of the trains
+    cout<<"phase 2: route determination"<< endl;
+    determineAllRoutes();
+    //collision detect karney kei liye
+    cout<< "phase 3: collision detection"<<endl;
+    detectCollisions();
+    //all trains are not advancing simultaneously
+    cout<<"phase 4: moving trains.."<< endl;
+    moveAllTrains();
+    
+    cout << "Phase 5: Updating switch counters..." << endl;
+    for (int i = 0; i < NumTrains; i++) {
+        if (train_status[i] == TRAIN_MOVING || train_status[i] == TRAIN_DELAYED) {
+            int x = train_x[i];
+            int y = train_y[i];
+            if (isInBounds(x, y)) {
+                char tile = grid[x][y];
+                if (isSwitchTile(tile)) {
+                    int switchIndex = getSwitchIndex(tile);
+                    if (switchIndex >= 0) {
+                        cout << "  Train " << i << " on switch " << tile 
+                             << " at (" << x << "," << y << ")" << endl;
+                        updateSwitchCounters(switchIndex, train_direction[i]);
+                    }
                 }
             }
         }
     }
+    
+    cout<<"Phase 6: Queueing switch flips..." << endl;
+    queueSwitchFlips();
+    cout << "Phase 7: Applying deferred flips..." << endl;
+    applyDeferredFlips();
+    cout << "Phase 8: Printing grid" << endl;
+    printGrid();
+    
+    currentTick++;
 }
-cout<<"Switch flips beeing queued"<<endl;
-queueSwitchFlips();
-applyDeferredFlips();
-cout<<"Collisions being detected"<<endl;
-detectCollisions();
-cout<<"Moving trains"<<endl;
-moveAllTrains();
-printGrid();
-currentTick++;
- }
+    
 
 
 
