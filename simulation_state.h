@@ -51,8 +51,8 @@ const int SWITCH_MODE_GLOBAL=1;
 
 // ----------------------------------------------------------------------------
 // SIGNAL CONSTANTS
-const int GREEN=0;
-const int YELLOW=1;
+const int GREEN=1;
+const int YELLOW=0;
 const int RED=2;
 
 //SPAWN DESTINATION CONSTANTss
