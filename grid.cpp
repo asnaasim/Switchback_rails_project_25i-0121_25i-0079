@@ -1,8 +1,19 @@
 #include "grid.h"
+#include "simulation.h"
+#include "io.h"
+#include "switches.h"
+#include "trains.h"
 #include "simulation_state.h"
 #include <string>
 #include <iostream>
 using namespace std;
+char grid[max_rows][max_cols];
+char originalGrid[max_rows][max_cols];
+int rows, cols;
+char tile;
+int spawnPointCount, destPointCount;
+int destx[MAX_DESTINATION], desty[MAX_DESTINATION], spawnx[MAX_SPAWN], spawny[MAX_SPAWN];
+int safetytiles=0;
 
 bool isInBounds(int x,int y)           //checks if entered x n y are in the range of arr
 {
@@ -63,10 +74,10 @@ bool isDestinationPoint(int x,int y)  //checks dest points ki vals by comparing 
     return false;
 }
 
-bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for that we check ke if the passed params are range mein or not
+void toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for that we check ke if the passed params are range mein or not
 {
     if (isInBounds(x,y)==false)
-        {return false;}
+        {return;}
 
     else if(isInBounds(x,y)==true)
     {  char tile=grid[x][y];                  //we assign aik val to tile taka its gets easier
@@ -74,13 +85,13 @@ bool toggleSafetyTile(int x,int y)         //this one asal mein j swaps but for 
        {
         grid[x][y]='=';
         safetytiles++;                    //use of stfy tile is inc cuz toggle hore hai
-        return true;
+        return;
        }
        else if (tile=='=')                                      
          {
         grid[x][y]=originalGrid[x][y];
         safetytiles--;                                                               
-        return true;   }}
+        return;   }}
     
-    return false; 
+    return; 
 }
