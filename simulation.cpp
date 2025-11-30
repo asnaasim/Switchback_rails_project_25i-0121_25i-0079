@@ -40,7 +40,7 @@ void printGrid()
         }
     }
 
-    //printin the actual wali grid
+    //printing the actual wali grid
     for (int i=0; i<rows; i++)
     {
         for (int j=0; j<cols; j++)
@@ -60,11 +60,11 @@ void printGrid()
             const string stateNames[] = {"INACTIVE","WAITING","MOVING","CRASHED", "DELAYED","ARRIVED"};
             // Check direction bounds to prevent crashing dirNames array
             int dir = (train_direction[i] >= 0 && train_direction[i] <= 3) ? train_direction[i] : DIR_RIGHT;
-            cout << " Train " << i << " at (" << train_x[i] << "," << train_y[i] << ") moving " 
+            cout << " Train " <<i<< " at (" << train_x[i] << "," << train_y[i] << ") moving " 
                  << dirNames[dir] << " state: " << stateNames[train_status[i]] << endl;
         }
     }
-    cout << "Delivered: " << metric_delivered << " | Crashed: " << metric_crashed << "\n";
+    cout << "Delivered: " <<metric_delivered<< " | Crashed: " << metric_crashed << "\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -80,9 +80,7 @@ void initializeSimulation()
     cout << "Grid: " << rows << " x " << cols << endl;
     cout << "Switches: " << NumSwitches << endl;
     cout << "seed: " << seed << endl;
-
     currentTick = 0;
-
     initializeLogFiles();
 }
 
@@ -91,35 +89,35 @@ void initializeSimulation()
 // ----------------------------------------------------------------------------
 void simulateOneTick()
 {
-    // PHASE 1: Time advancement and Spawning
+    //1: time ko advance karney kei liye
     currentTick++;
     cout << "---------------------------------------" << endl;
     cout << "TICK: " << currentTick << endl;
     
     spawnTrainsForTick();
-    updateEmergencyHalt(); // Manage the halt timer
+    updateEmergencyHalt(); //managing the halt wala timer
 
-    // PHASE 2: Route Determination (Plan next position for all moving/delayed trains)
-    cout << "Route determination underway (Phase 2)..." << endl;
+    //2:determining routes unn trains kei liye that are delayed
+    cout << "Route determination underway" << endl;
     determineAllRoutes();
 
-    // PHASE 3: Switch & Signal Logic
-    cout << "Switch and signal logic (Phase 3)..." << endl;
+    //2: switches n signals
+    cout << "Switch and signal logic << endl;
     
     // Update switch counters based on trains currently on switch tiles
-    for (int i = 0; i < NumTrains; i++)
+    for (int i = 0; i<NumTrains; i++)
     {
-        if (train_status[i] == TRAIN_MOVING || train_status[i] == TRAIN_WAITING || train_status[i] == TRAIN_DELAYED)
+        if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_WAITING || train_status[i]==TRAIN_DELAYED)
         {
-            int x = train_x[i];
-            int y = train_y[i];
+            int x=train_x[i];
+            int y=train_y[i];
             if (isInBounds(x, y))
             {
                 char tile = grid[x][y];
                 if (isSwitchTile(tile))
                 {
-                    int switchIndex = getSwitchIndex(tile);
-                    if (switchIndex >= 0)
+                    int switchIndex=getSwitchIndex(tile);
+                    if (switchIndex>=0)
                     {
                         updateSwitchCounters(switchIndex, train_direction[i]);
                     }
@@ -128,23 +126,23 @@ void simulateOneTick()
         }
     }
     
-    // Queue and apply flips based on counter updates
+    //application flips ki and queue counter updates ki basis par
     queueSwitchFlips();
     applyDeferredFlips();
     
-    // Update signals based on current positions and planned next positions
+    // planning next positions
     updateSignalLights();
 
-    // PHASE 4: Collision & Halt Application (Handle conflicts based on planned routes)
-    cout << "Collision and Halt Application (Phase 4)..." << endl;
+    // collision aur halt application
+    cout<<"Collision and Halt Application (Phase 4)!"<<endl;
     detectCollisions();
     applyEmergencyHalt();
 
-    // PHASE 5: Movement (Apply finalized moves)
+    // movement of trains
     cout << "Moving trains (Phase 5)..." << endl;
     moveAllTrains();
     
-    // Print the state
+    //printing grid finally
     printGrid();
 }
 
@@ -156,26 +154,24 @@ bool isSimulationComplete()
     int active = 0;
     int unspawned = 0;
     
-    for (int i = 0; i < NumTrains; i++)
+    for (int i=0; i<NumTrains; i++)
     {
-        // Count active trains (moving, waiting, or delayed)
+        //counting each type of train ie. active, delayed, crashed
         if (train_status[i]!=TRAIN_INACTIVE && 
             train_status[i]!=TRAIN_ARRIVED && 
-            train_status[i] != TRAIN_CRASHED)
+            train_status[i]!= TRAIN_CRASHED)
         {
             active++;
         }
         
         // Count trains that haven't spawned yet (spawn tick is in the future)
-        // Note: TRAIN_INACTIVE is the only state for unspawned trains.
-        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] > currentTick)
+        //imppp: TRAIN_INACTIVE is the only state for unspawned trains
+        if (train_status[i]==TRAIN_INACTIVE && train_spawnticks[i]>currentTick)
         {
             unspawned++;
         }
     }
     
-    // Simulation complete only when:
-    // 1. No active trains AND
-    // 2. No unspawned trains waiting to spawn
-    return (active == 0 && unspawned == 0);
+
+    return (active==0 && unspawned==0);
 }
