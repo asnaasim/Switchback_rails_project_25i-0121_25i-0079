@@ -17,5 +17,3 @@ void logSignalState(int tick, char Switch, int SigColour);
 void writeMetrics();
 
 #endif
-
-#endif
