@@ -147,7 +147,6 @@ extern int safetytiles;
     extern int metric_crashed; 
     extern int metric_collisions;
     extern int metric_totaltrains;
-    extern int metric_totaltrains;
     extern int signallights[50];
 
 // ----------------------------------------------------------------------------
