@@ -5,7 +5,6 @@
 #include "io.h"
 #include "grid.h"
 #include <cstdlib>
-#include <cstring>
 #include <ctime>
 #include <iostream>
 using namespace std;
@@ -14,94 +13,114 @@ using namespace std;
 // SIMULATION.CPP - Implementation of main simulation logic
 // ============================================================================
 
-//additional function for grid printing
-void printGrid(){
-    cout<<"Tick: "<<currentTick<<endl;          //provide the tick b4 starting
+void printGrid()
+{
+    cout << "Tick: " << currentTick << endl;
 
-    //creation of a grid
+    //originalgrid will be used background kei liye
     char display[max_rows][max_cols];
-    for (int i=0; i<rows; i++){
-        for (int j=0; j<cols; j++){
-            display[i][j]=originalGrid[i][j];
-        }
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {display[i][j] = originalGrid[i][j];}
     }
-    //the trains thatll come over the track
-    for (int i=0; i<NumTrains; i++){
-        if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_WAITING || train_status[i]==TRAIN_DELAYED){
-            int x= train_x[i];
-            int y= train_y[i];
-            if (isInBounds(x, y)){
-                display[x][y]='0'+(i%10);
+
+    //this is to put trains track kei oopar
+    for (int i = 0; i < NumTrains; i++)
+    {
+        if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_WAITING || train_status[i]==TRAIN_DELAYED)
+        {
+            int x=train_x[i];
+            int y=train_y[i];
+            if (isInBounds(x, y))
+            {
+                //train id display kei liye
+                display[x][y] = '0' + (i % 10);
             }
         }
     }
-    //print grid wala loop
-    for (int i =0; i<rows; i++){
-        for (int j=0; j<cols; j++){
+
+    //printin the actual wali grid
+    for (int i=0; i<rows; i++)
+    {
+        for (int j=0; j<cols; j++)
+        {
             cout<<display[i][j];
         }
         cout<<endl;
     }
-    cout<<"\nActive Trains: \n";
-for (int i=0; i<NumTrains; i++){
-    if (train_status[i]==TRAIN_MOVING || train_status[i]== TRAIN_DELAYED || train_status[i]== TRAIN_WAITING) {
-        const string dirNames[]= {"UP", "RIGHT", "DOWN", "LEFT"};
-        const string stateNames[]= {"INACTIVE", "WAITING", "MOVING","CRASHED", "DELAYED", "ARRIVED"};
-        cout<<" Train "<<i<<" at (" <<train_x[i]<<","<<train_y[i]<<") moving "<< dirNames[train_direction[i]]<<" state: "<<stateNames[train_status[i]]<<endl;}}
-        cout<<"Delivered: "<<metric_delivered<< " \n Crashed: "<<metric_crashed<<"\n";    }
+    
+    //printing train kei proper statistics
+    cout << "\nActive Trains: \n";
+    for (int i=0; i<NumTrains; i++)
+    {
+        if (train_status[i]==TRAIN_MOVING || train_status[i]==TRAIN_DELAYED || train_status[i]==TRAIN_WAITING)
+        {
+            const string dirNames[] = {"UP","RIGHT","DOWN","LEFT"};
+            const string stateNames[] = {"INACTIVE","WAITING","MOVING","CRASHED", "DELAYED","ARRIVED"};
+            // Check direction bounds to prevent crashing dirNames array
+            int dir = (train_direction[i] >= 0 && train_direction[i] <= 3) ? train_direction[i] : DIR_RIGHT;
+            cout << " Train " << i << " at (" << train_x[i] << "," << train_y[i] << ") moving " 
+                 << dirNames[dir] << " state: " << stateNames[train_status[i]] << endl;
+        }
+    }
+    cout << "Delivered: " << metric_delivered << " | Crashed: " << metric_crashed << "\n";
+}
 
 // ----------------------------------------------------------------------------
 // INITIALIZE SIMULATION
 // ----------------------------------------------------------------------------
 
-void initializeSimulation() {
-initializeSimulationState();
-cout<<"Simulation Initialized!"<<endl;
-cout<<"Your level: "<<(levelName[0]!='\0'? levelName:"Unknown")<<endl;
-cout<<"Your Trains: "<<NumTrains<<endl;
-cout<<"Grid: "<<rows<<"x"<< cols <<endl;
-cout<<"Switches: "<<NumSwitches<<endl;
-cout<<"seed: "<<seed<<endl;
+void initializeSimulation()
+{
+    initializeSimulationState();
+    cout << "Simulation Initialized!" << endl;
+    cout << "Your level: " << levelName << endl;
+    cout << "Your Trains: " << NumTrains << endl;
+    cout << "Grid: " << rows << " x " << cols << endl;
+    cout << "Switches: " << NumSwitches << endl;
+    cout << "seed: " << seed << endl;
 
-currentTick=0;
+    currentTick = 0;
 
-initializeLogFiles();
+    initializeLogFiles();
 }
 
-
 // ----------------------------------------------------------------------------
-// SIMULATE ONE TICK
+// SIMULATE ONE TICK (Phase structure for smooth movement)
 // ----------------------------------------------------------------------------
-
-void simulateOneTick() {
-    cout << "\n========================================" << endl;
-    cout << "           TICK " << currentTick << endl;
-    cout << "========================================" << endl;
-    //to spawn the trains
-    cout<<"phase 1: spawning trains"<<endl;
-    spawnTrainsForTick();
-    //to determine the route of the trains
-    cout<<"phase 2: route determination"<< endl;
-    determineAllRoutes();
-    //collision detect karney kei liye
-    cout<< "phase 3: collision detection"<<endl;
-    detectCollisions();
-    //all trains are not advancing simultaneously
-    cout<<"phase 4: moving trains.."<< endl;
-    moveAllTrains();
+void simulateOneTick()
+{
+    // PHASE 1: Time advancement and Spawning
+    currentTick++;
+    cout << "---------------------------------------" << endl;
+    cout << "TICK: " << currentTick << endl;
     
-    cout << "Phase 5: Updating switch counters..." << endl;
-    for (int i = 0; i < NumTrains; i++) {
-        if (train_status[i] == TRAIN_MOVING || train_status[i] == TRAIN_DELAYED) {
+    spawnTrainsForTick();
+    updateEmergencyHalt(); // Manage the halt timer
+
+    // PHASE 2: Route Determination (Plan next position for all moving/delayed trains)
+    cout << "Route determination underway (Phase 2)..." << endl;
+    determineAllRoutes();
+
+    // PHASE 3: Switch & Signal Logic
+    cout << "Switch and signal logic (Phase 3)..." << endl;
+    
+    // Update switch counters based on trains currently on switch tiles
+    for (int i = 0; i < NumTrains; i++)
+    {
+        if (train_status[i] == TRAIN_MOVING || train_status[i] == TRAIN_WAITING || train_status[i] == TRAIN_DELAYED)
+        {
             int x = train_x[i];
             int y = train_y[i];
-            if (isInBounds(x, y)) {
+            if (isInBounds(x, y))
+            {
                 char tile = grid[x][y];
-                if (isSwitchTile(tile)) {
+                if (isSwitchTile(tile))
+                {
                     int switchIndex = getSwitchIndex(tile);
-                    if (switchIndex >= 0) {
-                        cout << "  Train " << i << " on switch " << tile 
-                             << " at (" << x << "," << y << ")" << endl;
+                    if (switchIndex >= 0)
+                    {
                         updateSwitchCounters(switchIndex, train_direction[i]);
                     }
                 }
@@ -109,64 +128,54 @@ void simulateOneTick() {
         }
     }
     
-    cout<<"Phase 6: Queueing switch flips..." << endl;
+    // Queue and apply flips based on counter updates
     queueSwitchFlips();
-    cout << "Phase 7: Applying deferred flips..." << endl;
     applyDeferredFlips();
-    cout << "Phase 8: Printing grid" << endl;
+    
+    // Update signals based on current positions and planned next positions
+    updateSignalLights();
+
+    // PHASE 4: Collision & Halt Application (Handle conflicts based on planned routes)
+    cout << "Collision and Halt Application (Phase 4)..." << endl;
+    detectCollisions();
+    applyEmergencyHalt();
+
+    // PHASE 5: Movement (Apply finalized moves)
+    cout << "Moving trains (Phase 5)..." << endl;
+    moveAllTrains();
+    
+    // Print the state
     printGrid();
-    
-    currentTick++;
 }
-    
-
-
 
 // ----------------------------------------------------------------------------
 // CHECK IF SIMULATION IS COMPLETE
 // ----------------------------------------------------------------------------
-
-bool isSimulationComplete() {
-    //loop kei all trains r delivered/crashed
-    int active=0;
-    int arrived=0;
-    int crashed=0; 
-    int inactive=0;
-    for (int i=0; i<NumTrains; i++){
-        if (train_status[i] == TRAIN_MOVING && train_status[i] == TRAIN_WAITING && train_status[i] != TRAIN_DELAYED){
+bool isSimulationComplete()
+{
+    int active = 0;
+    int unspawned = 0;
+    
+    for (int i = 0; i < NumTrains; i++)
+    {
+        // Count active trains (moving, waiting, or delayed)
+        if (train_status[i]!=TRAIN_INACTIVE && 
+            train_status[i]!=TRAIN_ARRIVED && 
+            train_status[i] != TRAIN_CRASHED)
+        {
             active++;
         }
-        else if (train_status[i]==TRAIN_ARRIVED){
-            arrived++;
+        
+        // Count trains that haven't spawned yet (spawn tick is in the future)
+        // Note: TRAIN_INACTIVE is the only state for unspawned trains.
+        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] > currentTick)
+        {
+            unspawned++;
         }
-        else if (train_status[i]==TRAIN_CRASHED){
-            crashed++;
-        }
-        else if (train_status[i]==TRAIN_INACTIVE){
-            inactive++;
-        }
-    }
-    //check to see if trains are attempted to spawn
-    bool unspawned=false;
-        for (int i=0; i<NumTrains; i++){
-        if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i] >=currentTick){
-            unspawned=true;
-            break;
-        }
-    }
-    cout<<"Simulation Status Check! Current Tick= "<<currentTick<<endl;
-    cout<<"Total Trains: " <<NumTrains<<endl;
-    cout<<"Active (moving/waiting/delayed): "<<active<<endl;
-    cout<<"Arrived: "<<arrived<<endl;
-    cout<<"Crashed: "<<crashed<<endl;
-    cout<<"Inactive: "<<inactive<<endl;
-    cout << " Has unspawned: " << (unspawned ? "YES" : "NO") << endl;
-        bool isComplete = (active==0 && !unspawned);
-    
-    if (isComplete) {
-        cout << "  >>> SIMULATION COMPLETE <<<" << endl;
     }
     
-    return isComplete;
-
+    // Simulation complete only when:
+    // 1. No active trains AND
+    // 2. No unspawned trains waiting to spawn
+    return (active == 0 && unspawned == 0);
 }
