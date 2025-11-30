@@ -21,40 +21,63 @@ using namespace std;
 // ----------------------------------------------------------------------------
 // Activate trains scheduled for this tick.
 // ----------------------------------------------------------------------------
+
 void spawnTrainsForTick() {
     for (int i=0; i<NumTrains; i++){
         if (train_status[i] == TRAIN_INACTIVE && train_spawnticks[i]==currentTick){
             int xcoordinate= train_x[i];
             int ycoordinate= train_y[i];
-         //check to see if train should be spawnd
-        
-        //to see if spawn position occupied
-        bool spacetaken= false;
-        for (int j=0; j<NumTrains; j++){
-            if (train_status[j]!= TRAIN_INACTIVE && train_status[j]!=TRAIN_ARRIVED && train_status[j]!= TRAIN_CRASHED && i!=j){
-                if (train_x[j]==xcoordinate && train_y[j]==ycoordinate){
-                    spacetaken=true;
-                    break;
+         
+            //to see if spawn position occupied
+            bool spacetaken= false;
+            for (int j=0; j<NumTrains; j++){
+                if (train_status[j]!= TRAIN_INACTIVE && train_status[j]!=TRAIN_ARRIVED && train_status[j]!= TRAIN_CRASHED && i!=j){
+                    if (train_x[j]==xcoordinate && train_y[j]==ycoordinate){
+                        spacetaken=true;
+                        break;
+                    }
                 }
             }
-        }
-        //lopp to actual mei spawn the train
-        if (!spacetaken){
-            train_status[i]= TRAIN_MOVING;
-            train_previousx[i]= xcoordinate;
-            train_previousy[i]= ycoordinate;
-            metric_totaltrains++;
-            std::cout<<"New train spawned at "<<xcoordinate<<"and "<<ycoordinate<<endl;
-            logTrainTrace(currentTick, i, xcoordinate, ycoordinate, train_direction[i], 'M');
-        }
-        else {
-            train_spawnticks[i]++;
-            std::cout<<"Train "<<i<<"spawn delayed as space taken"<<endl;
-
+           
+            //loop to actual mei spawn the train
+            if (!spacetaken){
+                if (train_destinationx[i] == 0 && train_destinationy[i] == 0) {
+                    // Find nearest destination
+                    int minDist = 999999;
+                    int closestDest = 0;
+                    for (int d = 0; d < destPointCount; d++) {
+                        int dist = abs(xcoordinate - destx[d]) + abs(ycoordinate - desty[d]);
+                        if (dist < minDist && dist > 0) {
+                            minDist = dist;
+                            closestDest = d;
+                        }
+                    }
+                    if (destPointCount > 0) {
+                        train_destinationx[i] = destx[closestDest];
+                        train_destinationy[i] = desty[closestDest];
+                        std::cout << "Train " << i << " assigned destination ("
+                                  << train_destinationx[i] << "," << train_destinationy[i] << ")" << endl;
+                    }
+                }
+               
+                train_status[i]= TRAIN_MOVING;
+                train_previousx[i]= xcoordinate;
+                train_previousy[i]= ycoordinate;
+                metric_totaltrains++;
+                std::cout<<"New train spawned at ("<<xcoordinate<<","<<ycoordinate<<")";
+                std::cout<<" heading to ("<<train_destinationx[i]<<","<<train_destinationy[i]<<")";
+                std::cout<<" distance: "<<calcdistance(i)<<endl;
+                logTrainTrace(currentTick, i, xcoordinate, ycoordinate, train_direction[i], 'M');
+            }
+            else {
+                train_spawnticks[i]++;
+                std::cout<<"Train "<<i<<" spawn delayed as space taken"<<endl;
+            }
         }
     }
 }
-}
+
+
 //helper function to help us calculate manhattan distance to the actual destination
 int calcdistance(int trainindex){
     if (trainindex<0 || trainindex>=NumTrains){
@@ -230,7 +253,7 @@ int getSmartDirectionAtCrossing(int trainindex, int current_x, int current_y, in
     }
     else {
         if (dy>0 && currentdirection != DIR_LEFT) return DIR_RIGHT;
-       if (dy<0 && currentdirection != DIR_RIGHT) return DIR_LEFT; 
+        if (dy<0 && currentdirection != DIR_RIGHT) return DIR_LEFT; 
     }
     return currentdirection;
 }
@@ -304,7 +327,6 @@ void moveAllTrains() {
         }
     }
     checkArrivals();
-    applyDeferredFlips();
 }
 
 // ----------------------------------------------------------------------------
