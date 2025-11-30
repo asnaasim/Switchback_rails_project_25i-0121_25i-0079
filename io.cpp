@@ -1,17 +1,58 @@
 #include "io.h"
 #include "simulation_state.h"
 #include "grid.h"
+#include "simulation.h"
+#include "switches.h"
+#include "trains.h"
 #include <fstream>
 #include <iostream>
 #include <cstring>
 #include <sstream>
 #include <string>
+
 using namespace std;
 const char equalsign = '=';
 const char underscore = '|';
 const char s_char='S';          //these consts will be unifrom poori jaga se like same so we 
 const char d_char='D';
+char grid[max_rows][max_cols];
+int train_status[max_trains];
+char originalGrid[max_rows][max_cols];
+int train_direction[max_trains];
+int NumTrains=100;
+int train_waitticks[max_trains];
+char switch_letter[max_switches];
+int mode[max_switches];
+int switch_x[max_switches];
+char tile;
+int spawnPointCount, destPointCount;
+int destx[MAX_DESTINATION], desty[MAX_DESTINATION], spawnx[MAX_SPAWN], spawny[MAX_SPAWN];
+int switch_y[max_switches];
+int currentTick;
+int sdirection[MAX_SPAWN];
+int destid[MAX_DESTINATION];
+int switch_currentState[max_switches];
+char switch_statelabel1[max_switches][20];
+char switch_statelabel0[max_switches][20];
+int switch_kvalues[max_switches][4];
+int switch_counters[max_switches][4];
+int metric_delivered;
+int metric_crashed;
+int Train_ids[max_trains];
+int train_spawnticks[max_trains];
+int train_colorindex[max_trains]; 
+int train_x[max_trains];
+int train_y[max_trains]; 
+char levelName[100];
+int safetytiles;
+int NumSwitches;
+int weatherMode;
+int metric_collisions;
+int metric_totaltrains;
 string weather;
+int seed;
+int rows, cols;
+
 string trim(const string& str)
 {
     size_t first = str.find_first_not_of(" \t\r\n");
