@@ -10,8 +10,10 @@ using namespace std;
 
 // ============================================================================
 // TRAINS.CPP
-// ============================================================================
+// ==========================================================================
 
+
+//calculation of manhattan wla distance
 int calcdistance(int trainindex){
     if (trainindex<0||trainindex>=max_trains){
         return 999999;}
@@ -29,21 +31,21 @@ void spawnTrainsForTick() {
             int xcoordinate=train_x[i];
             int ycoordinate=train_y[i];
         
-            if (!isInBounds(xcoordinate, ycoordinate)) {
+            if (!isInBounds(xcoordinate, ycoordinate)) {        //check to see if trains coming on grids or not 
                 std::cout<<"ERROR: Train " <<i<< " spawn at (" <<xcoordinate<<"," 
                           <<ycoordinate<< ") is OUT OF BOUNDS!" << endl;
                 train_status[i]=TRAIN_CRASHED;
                 metric_crashed++;
-                continue;
+                continue;        //if not on track, tou crash ho jaye ga
             }
             bool spacetaken = false;
             for (int j=0; j<NumTrains; j++){
-                if (i== j) continue;
+                if (i== j) continue;           
                 if (train_status[j]==TRAIN_MOVING || train_status[j]==TRAIN_WAITING || train_status[j]==TRAIN_DELAYED){
                     if (train_x[j]==xcoordinate && train_y[j]==ycoordinate){
                         spacetaken = true;
                         break;
-                    }
+                    }         //check to see agar train occupying space or not
                 }
             }
             if (!spacetaken){
@@ -52,23 +54,22 @@ void spawnTrainsForTick() {
                     int closestDest=-1;
                     for (int d= 0; d<destPointCount; d++) {
                         int dist= abs(xcoordinate - destx[d]) +abs(ycoordinate - desty[d]);
-                        if (dist<minDist) { 
-                            minDist =dist;
-                            closestDest =d;
-                        }
+                        if (dist<minDist){ 
+                            minDist=dist;
+                            closestDest=d;}
                     }
-                    if (closestDest!=-1) {
+                    if (closestDest!=-1){
                         train_destinationx[i]=destx[closestDest];
                         train_destinationy[i]=desty[closestDest];
                     }
                 }
                 train_status[i] =TRAIN_MOVING;
-                train_previousx[i] =xcoordinate;
-                train_previousy[i] =ycoordinate;
+                train_previousx[i]=xcoordinate;
+                train_previousy[i]=ycoordinate;
                 metric_totaltrains++;
-                std::cout << "New train " << i << " spawned at (" << xcoordinate << "," << ycoordinate << ")";
-                std::cout << " heading to (" << train_destinationx[i] << "," << train_destinationy[i] << ")";
-                std::cout << " distance: " << calcdistance(i) << endl;
+                std::cout <<"New train " << i << " spawned at (" << xcoordinate << "," << ycoordinate << ")";
+                std::cout <<" heading to (" << train_destinationx[i] << "," << train_destinationy[i] << ")";
+                std::cout <<" distance: " << calcdistance(i) << endl;
                 
                 logTrainTrace(currentTick, i, xcoordinate, ycoordinate, train_direction[i], 'M');
             }
@@ -86,14 +87,14 @@ bool determineNextPosition(int trainindex) {
         return false;}
     
     int currentx = train_x[trainindex];
-    int currenty = train_y[trainindex];
+    int currenty =train_y[trainindex];
     int currentdirection = train_direction[trainindex];
     
-    // CRITICAL FIX: Verify current position is valid
+    //to see agar position valid or not 
     if (!isInBounds(currentx, currenty)) {
-        train_status[trainindex] = TRAIN_CRASHED;
+        train_status[trainindex]=TRAIN_CRASHED;
         metric_crashed++;
-        std::cout << "Train " << trainindex << " crashed (current position out of bounds)" << endl;
+        std::cout<<"Train " <<trainindex<< " crashed (current position out of bounds)"<<endl;
         logTrainTrace(currentTick, trainindex, currentx, currenty, currentdirection, 'C');
         return false;
     }
@@ -103,7 +104,7 @@ bool determineNextPosition(int trainindex) {
     if (currentdirection==DIR_UP) {
         nextx= currentx-1;
     } else if (currentdirection == DIR_RIGHT) {
-        nexty = currenty + 1;
+        nexty = currenty+1;
     } else if (currentdirection == DIR_DOWN) {
         nextx = currentx+1;
     } else if (currentdirection == DIR_LEFT) {
@@ -287,7 +288,7 @@ void moveAllTrains() {
     }
     checkArrivals();
 }
-
+//trains ki collisions detect
 void detectCollisions(){
     for (int i = 0; i < NumTrains; i++) {
         if (!train_plannedmove[i] || train_status[i]==TRAIN_CRASHED) {
@@ -313,25 +314,25 @@ void detectCollisions(){
             if (collision_detected){
                 int distanceI=calcdistance(i);
                 int distanceJ=calcdistance(j);
-                
+                // the priority wali cheez
                 if (distanceI > distanceJ) {
                     train_status[j] = TRAIN_WAITING;
-                    train_waitticks[j]++;
+                    train_waitticks[j]++;        //train closer to destination, to move towards the destination
                     totalWaitTicks++;
                     train_plannedmove[j] = false;
                     cout << "Collision: Train " << j << " waiting" << endl;
                 }
                 else if (distanceJ > distanceI) {
-                    train_status[i] = TRAIN_WAITING;
+                    train_status[i] =TRAIN_WAITING;
                     train_waitticks[i]++;
-                    totalWaitTicks++;
+                    totalWaitTicks++;                //check for other train
                     train_plannedmove[i]=false;
-                    cout<<"Collision: Train " <<i<<" waiting"<< endl;
+                    cout<<"Collision: Train"<<i<<" waiting"<< endl;
                 }
                 else {
-                    train_status[j] = TRAIN_WAITING;
+                    train_status[j]=TRAIN_WAITING;
                     train_waitticks[j]++;
-                    totalWaitTicks++;
+                    totalWaitTicks++;            //trains coming saath, collision
                     train_plannedmove[j]=false;
                     cout << "Collision: Train " << j << "waiting (tie-breaker)" << endl;
                 }
@@ -345,18 +346,15 @@ void applyEmergencyHalt(){
         return;}
     int halt_x=emergencyhalt_x;
     int halt_y=emergencyhalt_y;
-
      for (int i=0; i<NumTrains; i++){
         if (train_status[i] !=TRAIN_MOVING && train_status[i]!=TRAIN_DELAYED){
             continue;
         }
         
         int trainx=train_x[i];
-        int trainy= train_y[i];
-
+        int trainy=train_y[i];
         int dx=abs(trainx- halt_x);
         int dy=abs(trainy- halt_y);
-
         if (dx<=1 && dy<=1){ 
             if (train_status[i]==TRAIN_MOVING) {
                 train_status[i]=TRAIN_WAITING;
@@ -367,7 +365,7 @@ void applyEmergencyHalt(){
         }
     }
 }
-
+//to activate or disable emergency halt
 void updateEmergencyHalt(){            
     if (emergencyhalt_active==true){
         emergencyhalt_timer--;
