@@ -14,22 +14,6 @@ using namespace std;
 // SIMULATION.CPP - Implementation of main simulation logic
 // ============================================================================
 
-int rows, cols;
-char grid[max_rows][max_cols];    
-char originalGrid[max_rows][max_cols];
-int train_x[max_trains];
-int train_status[max_trains];
-int train_spawnticks[max_trains];
-int train_direction[max_trains];
-int metric_delivered;
-int metric_crashed;
-int max_trains;
-int NumTrains;
-int NumSwitches;
-int seed;
-char levelName[100];
-int currentTick;
-
 //additional function for grid printing
 void printGrid(){
     cout<<"Tick: "<<currentTick<<endl;          //provide the tick b4 starting
